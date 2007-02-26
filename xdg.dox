@@ -2,7 +2,7 @@
 
 PROJECT_NAME           = xdg-basedir
 PROJECT_NUMBER         = 1
-OUTPUT_DIRECTORY       = doc
+OUTPUT_DIRECTORY       = xdg-dox
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
 ALWAYS_DETAILED_SEC    = NO
@@ -11,13 +11,13 @@ JAVADOC_AUTOBRIEF      = YES
 TAB_SIZE               = 4
 OPTIMIZE_OUTPUT_FOR_C  = YES
 
-EXTRACT_ALL            = NO
-EXTRACT_PRIVATE        = NO
-EXTRACT_STATIC         = NO
-EXTRACT_LOCAL_CLASSES  = NO
-EXTRACT_LOCAL_METHODS  = NO
-HIDE_UNDOC_MEMBERS     = NO
-HIDE_UNDOC_CLASSES     = NO
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_LOCAL_METHODS  = YES
+HIDE_UNDOC_MEMBERS     = YES
+HIDE_UNDOC_CLASSES     = YES
 
 # If the HIDE_IN_BODY_DOCS tag is set to YES, Doxygen will hide any 
 # documentation blocks found inside the body of a function. 
@@ -215,11 +215,12 @@ FILTER_SOURCE_FILES    = NO
 # configuration options related to source browsing
 #---------------------------------------------------------------------------
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
-REFERENCED_BY_RELATION = NO
-REFERENCES_RELATION    = NO
+REFERENCED_BY_RELATION = YES
+REFERENCES_RELATION    = YES
+REFERENCES_LINK_SOURCE = YES
 
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output

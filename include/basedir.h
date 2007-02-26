@@ -2,21 +2,25 @@
   * @brief Functions for using the XDG basedir specification.
   * See http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html for details. */ 
 
-#ifndef _XDG_BASEDIR_H_
-#define _XDG_BASEDIR_H_
+#ifndef XDG_BASEDIR_H
+#define XDG_BASEDIR_H
 
 #include <stdbool.h>
+#include <stdio.h>
 
 /** Version of XDG basedir-spec implemented in this library. */
 #define XDG_BASEDIR_SPEC 0.6
 
-/** @struct _xdgHandle
+/** @name XDG data cache management */
+/*@{*/
+
+/** @struct xdgHandle
   * Handle to XDG data cache.
   * Handles are allocated with xdgAllocHandle() and
   * freed with xdgFreeHandle(). */
 typedef struct _xdgHandle {
 	void *reserved;
-} *xdgHandle; 
+} *xdgHandle;
 
 /** Get a handle to an XDG data cache and initialize the cache.
   * Use xdgFreeHandle() to free the handle. */
@@ -33,6 +37,7 @@ void xdgFreeHandle(xdgHandle handle);
   * @return 0 if update failed, non-0 if successful.*/
 bool xdgUpdateData(xdgHandle handle);
 
+/*@}*/
 /** @name Basic XDG-Basedir Queries */
 /*@{*/
 
@@ -121,4 +126,4 @@ FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handl
 
 /*@}*/
 
-#endif //_XDG_BASEDIR_H_
+#endif //XDG_BASEDIR_H

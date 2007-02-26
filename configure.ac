@@ -9,7 +9,7 @@ AC_PROG_LIBTOOL
 AC_CHECK_PROG([has_doxygen], [doxygen], [yes])
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([stdlib.h string.h])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
@@ -22,6 +22,6 @@ AM_CONDITIONAL(HAS_DOXYGEN, test x$has_doxygen = xyes)
 
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile
-                 include/Makefile
-                 src/Makefile])
+				include/Makefile
+				src/Makefile])
 AC_OUTPUT

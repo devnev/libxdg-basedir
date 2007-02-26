@@ -2,9 +2,9 @@
   * @brief Implementation of the XDG basedir specification. */
 
 #include <stdlib.h>
-#include <stdio.h>
+#include <string.h>
 #include <stdarg.h>
-#include "basedir.h"
+#include <basedir.h>
 
 static const char
 	DefaultRelativeDataHome[] = "/.local/share",
@@ -31,12 +31,13 @@ typedef struct _xdgCachedData
 
 xdgHandle xdgAllocHandle()
 {
-	if (!(xdgHandle handle = (xdgHandle)malloc(sizeof(*xdgHandle)))) return 0;
+	xdgHandle handle = (xdgHandle)malloc(sizeof(*handle));
+	if (!handle) return 0;
 	handle->reserved = 0; // So xdgUpdateData() doesn't free it
-	if (xdgUpdateData(handle));
+	if (xdgUpdateData(handle))
 		return handle;
 	else
-		free(handle)
+		free(handle);
 	return 0;
 }
 
@@ -98,9 +99,8 @@ static char* xdgGetEnv(const char* name, const char* defaultValue)
 	}
 	else
 	{
-		if (!(varHome = (char*)malloc(strlen(home)+strlen(relPath)+1))) return 0;
-		strcpy(varHome, home);
-		strcat(varHome, relPath);
+		if (!(value = (char*)malloc(strlen(defaultValue)+1))) return 0;
+		strcpy(value, defaultValue);
 	}
 	return value;
 }
@@ -110,16 +110,16 @@ static char* xdgGetEnv(const char* name, const char* defaultValue)
  */
 static char** xdgSplitPath(const char* string)
 {
-	unsigned int size, i, j;
+	unsigned int size, i, j, k;
 	char** itemlist;
-	char* ptr;
+	const char* ptr;
 
 	// Get the number of paths
 	size=2; // One item more than seperators + terminating null item
-	for (int i = 0; item[i]; ++i)
+	for (i = 0; string[i]; ++i)
 	{
-		if (item[i] == '\\' && item[i+1]) ++i; // skip escaped characters including seperators
-		else if (item[i] == ':') ++size;
+		if (string[i] == '\\' && string[i+1]) ++i; // skip escaped characters including seperators
+		else if (string[i] == ':') ++size;
 	}
 	
 	if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return 0;
@@ -132,7 +132,7 @@ static char** xdgSplitPath(const char* string)
 		for (j = 0; ptr[j] && ptr[j] != ':'; ++j)
 			if (ptr[j] == '\\' && ptr[j+1]) ++j;
 		if (!(itemlist[i] = (char*)malloc(j+1))) { xdgFreeStringList(itemlist); return 0; }
-		for (int k = j = 0; ptr[j] && ptr[j] != ':'; ++j, ++k)
+		for (k = j = 0; ptr[j] && ptr[j] != ':'; ++j, ++k)
 		{
 			if (ptr[j] == '\\' && ptr[j+1] == ':') ++j; // replace escaped ':' with just ':'
 			else if (ptr[j] == '\\' && ptr[j+1]) // skip escaped characters so escaping remains aligned to pairs.
@@ -158,7 +158,9 @@ static char** xdgGetPathListEnv(const char* name, int numDefaults, ...)
 	const char* env;
 	va_list ap;
 	char* item;
+	const char* arg;
 	char** itemlist;
+	int i;
 
 	env = getenv(name);
 	if (env && env[0])
@@ -175,12 +177,13 @@ static char** xdgGetPathListEnv(const char* name, int numDefaults, ...)
 		memset(itemlist, 0, sizeof(char*)*(numDefaults+1));
 
 		// Copy the varargs into the itemlist
-		va_start(ap, name);
-		for (int i = 0; i < numDefaults; i++)
+		va_start(ap, numDefaults);
+		for (i = 0; i < numDefaults; i++)
 		{
-			item = va_arg(ap, const char*);
-			if (!(itemlist[i] = (char*)malloc(strlen(item)+1))) { xdgFreeStringList(itemlist); return 0; }
-			strcpy(itemlist[i], item);
+			arg = va_arg(ap, const char*);
+			if (!(item = (char*)malloc(strlen(arg)+1))) { xdgFreeStringList(itemlist); return 0; }
+			strcpy(item, arg);
+			itemlist[i] = item;
 		}
 		va_end(ap);
 	}
@@ -194,7 +197,7 @@ static char** xdgGetPathListEnv(const char* name, int numDefaults, ...)
 static bool xdgUpdateHomeDirectories(xdgCachedData* cache)
 {
 	const char* env;
-	char* home, defVal;
+	char* home, *defVal;
 
 	env = getenv("HOME");
 	if (!env || !env[0])
@@ -238,7 +241,7 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 			DefaultDataDirectories1, DefaultDataDirectories2);
 	if (!itemlist) return false;
 	for (size = 0; itemlist[size]; size++) ; // Get list size
-	if (!(cache->searchableDataDirectories = (char**)malloc(sizeof(char*)*(size+2))))
+	if (!(cache->searchableDataDirectories = (const char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
 		return false;
@@ -250,7 +253,7 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 	itemlist = xdgGetPathListEnv("XDG_CONFIG_DIRS", 1, DefaultConfigDirectories);
 	if (!itemlist) return false;
 	for (size = 0; itemlist[size]; size++) ; // Get list size
-	if (!(cache->searchableConfigDirectories = (char**)malloc(sizeof(char*)*(size+2))))
+	if (!(cache->searchableConfigDirectories = (const char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
 		return false;
@@ -296,7 +299,9 @@ static const char* xdgFindExisting(const char * relativePath, const char * const
 	char * tmpString;
 	int strLen = 0;
 	FILE * testFile;
-	for (const char * const * item = dirList; *item; item++)
+	const char * const * item;
+
+	for (item = dirList; *item; item++)
 	{
 		if (!(fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+1)))
 		{
@@ -340,7 +345,9 @@ static FILE * xdgFileOpen(const char * relativePath, const char * mode, const ch
 {
 	char * fullPath;
 	FILE * testFile;
-	for (const char * const * item = dirList; *item; item++)
+	const char * const * item;
+
+	for (item = dirList; *item; item++)
 	{
 		if (fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+1))
 			return 0;
@@ -364,7 +371,7 @@ const char * xdgConfigHome(xdgHandle handle)
 }
 const char * const * xdgDataDirectories(xdgHandle handle)
 {
-	return &(GET_CACHE(handle)->searchableConfigDirectories[1])
+	return &(GET_CACHE(handle)->searchableConfigDirectories[1]);
 }
 const char * const * xdgSearchableDataDirectories(xdgHandle handle)
 {

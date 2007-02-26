@@ -2,16 +2,15 @@ SUBDIRS = include src
 
 EXTRA_DIST =			\
 	xdg.dox			\
-	xdg-source.dox		\
-	gendock.sh		\
 	autogen.sh
+
+include_HEADERS = include/basedir.h
 
 #DISTCLEANFILES =	\
 #	doc		\
 #	source-doc
 
 if HAS_DOXYGEN
-doc:
+dox:
 	doxygen xdg.dox > /dev/null && echo "Documentation generated"
-	doxygen xdg-source.dox > /dev/null && echo "Source documentatino generated"
 endif
