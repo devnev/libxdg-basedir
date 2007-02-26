@@ -1,2 +1,2 @@
-pkginclude_LTLIBRARIES = libxdginclude
-libxdginclude_HEADERS = basedir.h
+pkginclude_LTLIBRARIES = libxdg.la
+libxdg_la_HEADERS = basedir.h
