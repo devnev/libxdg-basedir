@@ -8,6 +8,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Version of XDG basedir-spec implemented in this library. */
 #define XDG_BASEDIR_SPEC 0.6
 
@@ -125,5 +129,9 @@ FILE * xdgDataOpen(const char* relativePath, const char* mode, xdgHandle handle)
 FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handle);
 
 /*@}*/
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif //XDG_BASEDIR_H
