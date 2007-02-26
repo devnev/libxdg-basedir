@@ -23,5 +23,6 @@ AM_CONDITIONAL(HAS_DOXYGEN, test x$has_doxygen = xyes)
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile
 				include/Makefile
-				src/Makefile])
+				src/Makefile
+				test/Makefile])
 AC_OUTPUT
