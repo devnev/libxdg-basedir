@@ -336,12 +336,13 @@ static const char* xdgFindExisting(const char * relativePath, const char * const
 		free(fullPath);
 	}
 	if (returnString)
-	{
 		returnString[strLen+1] = 0;
-		return returnString;
-	}
 	else
-		return "\0";
+	{
+		if ((returnString = (char*)malloc(2)))
+			strcpy(returnString, "\0");
+	}
+	return returnString;
 }
 
 /** Open first possible config file corresponding to relativePath.
