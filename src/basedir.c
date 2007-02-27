@@ -312,12 +312,14 @@ static const char* xdgFindExisting(const char * relativePath, const char * const
 
 	for (item = dirList; *item; item++)
 	{
-		if (!(fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+1)))
+		if (!(fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+2)))
 		{
 			if (returnString) free(returnString);
 			return 0;
 		}
 		strcpy(fullPath, *item);
+		if (relativePath[0] != '/')
+			strcat(fullPath, "/");
 		strcat(fullPath, relativePath);
 		testFile = fopen(fullPath, "r");
 		if (testFile)
@@ -359,9 +361,11 @@ static FILE * xdgFileOpen(const char * relativePath, const char * mode, const ch
 
 	for (item = dirList; *item; item++)
 	{
-		if (fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+1))
+		if (fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+2))
 			return 0;
 		strcpy(fullPath, *item);
+		if (relativePath[0] != '/')
+			strcat(fullPath, "/");
 		strcat(fullPath, relativePath);
 		testFile = fopen(fullPath, mode);
 		free(fullPath);
