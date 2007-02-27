@@ -12,5 +12,5 @@ include_HEADERS = include/basedir.h
 
 if HAS_DOXYGEN
 dox:
-	doxygen xdg.dox > /dev/null && echo "Documentation generated"
+	@doxygen xdg.dox > /dev/null && echo "Documentation generated"
 endif
