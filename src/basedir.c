@@ -48,9 +48,10 @@ xdgHandle xdgAllocHandle()
 /** Free all memory used by a NULL-terminated string list */
 static void xdgFreeStringList(char** list)
 {
+	char** ptr = list;
 	if (!list) return;
-	for (; *list; list++)
-		free(*list);
+	for (; *ptr; ptr++)
+		free(*ptr);
 	free(list);
 }
 
@@ -318,7 +319,7 @@ static const char* xdgFindExisting(const char * relativePath, const char * const
 			return 0;
 		}
 		strcpy(fullPath, *item);
-		if (relativePath[0] != '/')
+		if (fullPath[strlen(fullPath)-1] != '/')
 			strcat(fullPath, "/");
 		strcat(fullPath, relativePath);
 		testFile = fopen(fullPath, "r");
@@ -338,7 +339,7 @@ static const char* xdgFindExisting(const char * relativePath, const char * const
 		free(fullPath);
 	}
 	if (returnString)
-		returnString[strLen+1] = 0;
+		returnString[strLen] = 0;
 	else
 	{
 		if ((returnString = (char*)malloc(2)))
@@ -364,7 +365,7 @@ static FILE * xdgFileOpen(const char * relativePath, const char * mode, const ch
 		if (fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+2))
 			return 0;
 		strcpy(fullPath, *item);
-		if (relativePath[0] != '/')
+		if (fullPath[strlen(fullPath)-1] != '/')
 			strcat(fullPath, "/");
 		strcat(fullPath, relativePath);
 		testFile = fopen(fullPath, mode);

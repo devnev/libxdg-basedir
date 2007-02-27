@@ -17,6 +17,7 @@ void printAndFreeStrings(const char * strings)
 int main(int argc, char* argv[])
 {
 	const char* result;
+	int ret = 0;
 	xdgHandle handle = xdgAllocHandle();
 	if (!handle) return 1;
 
@@ -34,10 +35,11 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "--config") == 0)
 			printAndFreeStrings(xdgConfigFind(argv[2], handle));
 		else
-			return 2;
+			ret = 2;
 	}
 	else
-		return 2;
+		ret = 2;
 
-	return 0;
+	xdgFreeHandle(handle);
+	return ret;
 }
