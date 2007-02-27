@@ -18,7 +18,7 @@ extern "C" {
 /** @name XDG data cache management */
 /*@{*/
 
-/** @struct xdgHandle
+/** @typedef xdgHandle
   * Handle to XDG data cache.
   * Handles are allocated with xdgAllocHandle() and
   * freed with xdgFreeHandle(). */

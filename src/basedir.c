@@ -298,8 +298,8 @@ bool xdgUpdateData(xdgHandle handle)
 /** Find all existing files corresponding to relativePath relative to each item in dirList.
   * @param relativePath Relative path to search for.
   * @param dirList <tt>NULL</tt>-terminated list of directory paths.
-  * @return A sequence of null-terminated strings terminated by a double-<tt>NULL</tt> (empty string)
-  * 	and allocated using malloc().
+  * @return A sequence of null-terminated strings terminated by a
+  * 	double-<tt>NULL</tt> (empty string) and allocated using malloc().
   */
 static const char* xdgFindExisting(const char * relativePath, const char * const * dirList)
 {
