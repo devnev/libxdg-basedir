@@ -6,6 +6,10 @@
 #include <stdarg.h>
 #include <basedir.h>
 
+#ifndef MAX
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
+#endif
+
 static const char
 	DefaultRelativeDataHome[] = "/.local/share",
 	DefaultRelativeConfigHome[] = "/.config",
@@ -16,15 +20,15 @@ static const char
 
 typedef struct _xdgCachedData
 {
-	const char * dataHome;
-	const char * configHome;
-	const char * cacheHome;
+	char * dataHome;
+	char * configHome;
+	char * cacheHome;
 	// Note: string lists are null-terminated and all items
 	// except the first are assumed to be allocated using malloc.
 	// The first item is assumed to be allocated by malloc only if
 	// it is not equal to the appropriate home directory string above.
-	const char ** searchableDataDirectories;
-	const char ** searchableConfigDirectories; 
+	char ** searchableDataDirectories;
+	char ** searchableConfigDirectories; 
 } xdgCachedData;
 
 #define GET_CACHE(handle) ((xdgCachedData*)(handle->reserved))
@@ -42,7 +46,7 @@ xdgHandle xdgAllocHandle()
 }
 
 /** Free all memory used by a NULL-terminated string list */
-static void xdgFreeStringList(const char * const * list)
+static void xdgFreeStringList(char** list)
 {
 	if (!list) return;
 	for (; *list; list++)
@@ -53,7 +57,6 @@ static void xdgFreeStringList(const char * const * list)
 /** Free all data in the cache and set pointers to null. */
 static void xdgFreeData(xdgCachedData *cache)
 {
-	const char ** item;
 	if (cache->dataHome);
 	{
 		// the first element of the directory lists is usually the home directory
@@ -165,7 +168,7 @@ static char** xdgGetPathListEnv(const char* name, int numDefaults, ...)
 	env = getenv(name);
 	if (env && env[0])
 	{
-		if (!(item = malloc(strlen(env)+1))) return 0;
+		if (!(item = (char*)malloc(strlen(env)+1))) return 0;
 		strcpy(item, env);
 
 		itemlist = xdgSplitPath(item);
@@ -241,7 +244,7 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 			DefaultDataDirectories1, DefaultDataDirectories2);
 	if (!itemlist) return false;
 	for (size = 0; itemlist[size]; size++) ; // Get list size
-	if (!(cache->searchableDataDirectories = (const char**)malloc(sizeof(char*)*(size+2))))
+	if (!(cache->searchableDataDirectories = (char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
 		return false;
@@ -253,7 +256,7 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 	itemlist = xdgGetPathListEnv("XDG_CONFIG_DIRS", 1, DefaultConfigDirectories);
 	if (!itemlist) return false;
 	for (size = 0; itemlist[size]; size++) ; // Get list size
-	if (!(cache->searchableConfigDirectories = (const char**)malloc(sizeof(char*)*(size+2))))
+	if (!(cache->searchableConfigDirectories = (char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
 		return false;
@@ -313,7 +316,7 @@ static const char* xdgFindExisting(const char * relativePath, const char * const
 		testFile = fopen(fullPath, "r");
 		if (testFile)
 		{
-			if (!(tmpString = realloc(returnString, strLen+strlen(fullPath)+2)))
+			if (!(tmpString = (char*)realloc(returnString, strLen+strlen(fullPath)+2)))
 			{
 				free(returnString);
 				free(fullPath);
