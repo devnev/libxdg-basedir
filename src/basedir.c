@@ -374,11 +374,11 @@ const char * xdgConfigHome(xdgHandle handle)
 }
 const char * const * xdgDataDirectories(xdgHandle handle)
 {
-	return &(GET_CACHE(handle)->searchableConfigDirectories[1]);
+	return &(GET_CACHE(handle)->searchableDataDirectories[1]);
 }
 const char * const * xdgSearchableDataDirectories(xdgHandle handle)
 {
-	return GET_CACHE(handle)->searchableConfigDirectories;
+	return GET_CACHE(handle)->searchableDataDirectories;
 }
 const char * const * xdgConfigDirectories(xdgHandle handle)
 {
