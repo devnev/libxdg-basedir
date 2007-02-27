@@ -148,6 +148,7 @@ static char** xdgSplitPath(const char* string)
 		ptr += j;
 		if (*ptr == ':') ptr++; // skip seperator
 	}
+	return itemlist;
 }
 
 /** Get $PATH-style environment variable as list of strings.
