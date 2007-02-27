@@ -134,4 +134,4 @@ FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handl
 } // extern "C"
 #endif
 
-#endif //XDG_BASEDIR_H
+#endif /*XDG_BASEDIR_H*/

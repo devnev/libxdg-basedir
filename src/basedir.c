@@ -23,10 +23,10 @@ typedef struct _xdgCachedData
 	char * dataHome;
 	char * configHome;
 	char * cacheHome;
-	// Note: string lists are null-terminated and all items
-	// except the first are assumed to be allocated using malloc.
-	// The first item is assumed to be allocated by malloc only if
-	// it is not equal to the appropriate home directory string above.
+	/* Note: string lists are null-terminated and all items */
+	/* except the first are assumed to be allocated using malloc. */
+	/* The first item is assumed to be allocated by malloc only if */
+	/* it is not equal to the appropriate home directory string above. */
 	char ** searchableDataDirectories;
 	char ** searchableConfigDirectories; 
 } xdgCachedData;
@@ -37,7 +37,7 @@ xdgHandle xdgAllocHandle()
 {
 	xdgHandle handle = (xdgHandle)malloc(sizeof(*handle));
 	if (!handle) return 0;
-	handle->reserved = 0; // So xdgUpdateData() doesn't free it
+	handle->reserved = 0; /* So xdgUpdateData() doesn't free it */
 	if (xdgUpdateData(handle))
 		return handle;
 	else
@@ -59,7 +59,7 @@ static void xdgFreeData(xdgCachedData *cache)
 {
 	if (cache->dataHome);
 	{
-		// the first element of the directory lists is usually the home directory
+		/* the first element of the directory lists is usually the home directory */
 		if (cache->searchableDataDirectories[0] != cache->dataHome)
 			free(cache->dataHome);
 		cache->dataHome = 0;
@@ -115,38 +115,40 @@ static char** xdgSplitPath(const char* string)
 {
 	unsigned int size, i, j, k;
 	char** itemlist;
-	const char* ptr;
 
-	// Get the number of paths
-	size=2; // One item more than seperators + terminating null item
+	/* Get the number of paths */
+	size=2; /* One item more than seperators + terminating null item */
 	for (i = 0; string[i]; ++i)
 	{
-		if (string[i] == '\\' && string[i+1]) ++i; // skip escaped characters including seperators
+		if (string[i] == '\\' && string[i+1]) ++i; /* skip escaped characters including seperators */
 		else if (string[i] == ':') ++size;
 	}
 	
 	if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return 0;
 	memset(itemlist, 0, sizeof(char*)*size);
 
-	ptr = string;
-	i = 0;
-	while (*ptr)
+	for (i = 0; *string; ++i)
 	{
-		for (j = 0; ptr[j] && ptr[j] != ':'; ++j)
-			if (ptr[j] == '\\' && ptr[j+1]) ++j;
+		/* get length of current string  */
+		for (j = 0; string[j] && string[j] != ':'; ++j)
+			if (string[j] == '\\' && string[j+1]) ++j;
+	
 		if (!(itemlist[i] = (char*)malloc(j+1))) { xdgFreeStringList(itemlist); return 0; }
-		for (k = j = 0; ptr[j] && ptr[j] != ':'; ++j, ++k)
+
+		/* transfer string, unescaping any escaped seperators */
+		for (k = j = 0; string[j] && string[j] != ':'; ++j, ++k)
 		{
-			if (ptr[j] == '\\' && ptr[j+1] == ':') ++j; // replace escaped ':' with just ':'
-			else if (ptr[j] == '\\' && ptr[j+1]) // skip escaped characters so escaping remains aligned to pairs.
+			if (string[j] == '\\' && string[j+1] == ':') ++j; /* replace escaped ':' with just ':' */
+			else if (string[j] == '\\' && string[j+1]) /* skip escaped characters so escaping remains aligned to pairs. */
 			{
-				itemlist[i][k]=ptr[j];
+				itemlist[i][k]=string[j];
 				++j, ++k;
 			}
-			itemlist[i][k] = ptr[j];
+			itemlist[i][k] = string[j];
 		}
-		ptr += j;
-		if (*ptr == ':') ptr++; // skip seperator
+		/* move to next string */
+		string += j;
+		if (*string == ':') string++; /* skip seperator */
 	}
 	return itemlist;
 }
@@ -180,7 +182,7 @@ static char** xdgGetPathListEnv(const char* name, int numDefaults, ...)
 		if (!(itemlist = (char**)malloc(sizeof(char*)*numDefaults+1))) return 0;
 		memset(itemlist, 0, sizeof(char*)*(numDefaults+1));
 
-		// Copy the varargs into the itemlist
+		/* Copy the varargs into the itemlist */
 		va_start(ap, numDefaults);
 		for (i = 0; i < numDefaults; i++)
 		{
@@ -209,7 +211,7 @@ static bool xdgUpdateHomeDirectories(xdgCachedData* cache)
 	if (!(home = (char*)malloc(strlen(env)+1))) return false;
 	strcpy(home, env);
 
-	// Allocate maximum needed for any of the 3 default values
+	/* Allocate maximum needed for any of the 3 default values */
 	defVal = (char*)malloc(strlen(home)+
 		MAX(MAX(sizeof(DefaultRelativeDataHome), sizeof(DefaultRelativeConfigHome)), sizeof(DefaultRelativeCacheHome)));
 	if (!defVal) return false;
@@ -244,19 +246,20 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 	itemlist = xdgGetPathListEnv("XDG_DATA_DIRS", 2,
 			DefaultDataDirectories1, DefaultDataDirectories2);
 	if (!itemlist) return false;
-	for (size = 0; itemlist[size]; size++) ; // Get list size
+	for (size = 0; itemlist[size]; size++) ; /* Get list size */
 	if (!(cache->searchableDataDirectories = (char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
 		return false;
 	}
+	/* "home" directory has highest priority according to spec */
 	cache->searchableDataDirectories[0] = cache->dataHome;
 	memcpy(&(cache->searchableDataDirectories[1]), itemlist, sizeof(char*)*(size+1));
 	free(itemlist);
 	
 	itemlist = xdgGetPathListEnv("XDG_CONFIG_DIRS", 1, DefaultConfigDirectories);
 	if (!itemlist) return false;
-	for (size = 0; itemlist[size]; size++) ; // Get list size
+	for (size = 0; itemlist[size]; size++) ; /* Get list size */
 	if (!(cache->searchableConfigDirectories = (char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
@@ -278,12 +281,14 @@ bool xdgUpdateData(xdgHandle handle)
 	if (xdgUpdateHomeDirectories(cache) &&
 		xdgUpdateDirectoryLists(cache))
 	{
+		/* Update successful, replace pointer to old cache with pointer to new cache */
 		if (handle->reserved) free(handle->reserved);
 		handle->reserved = cache;
 		return true;
 	}
 	else
 	{
+		/* Update failed, discard new cache and leave old cache unmodified */
 		xdgFreeData(cache);
 		free(cache);
 		return false;
