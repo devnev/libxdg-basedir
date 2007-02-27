@@ -4,11 +4,12 @@
 
 void printAndFreeStrings(const char * strings)
 {
+	const char * ptr = strings;
 	if (!strings) return;
-	while (*strings)
+	while (*ptr)
 	{
-		printf("%s\n", strings);
-		strings += strlen(strings)+1;
+		printf("%s\n", ptr);
+		ptr += strlen(ptr)+1;
 	}
 	free(strings);
 }
