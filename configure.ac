@@ -24,5 +24,5 @@ AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile
 				include/Makefile
 				src/Makefile
-				test/Makefile])
+				tests/Makefile])
 AC_OUTPUT

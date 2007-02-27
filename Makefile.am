@@ -1,4 +1,4 @@
-SUBDIRS = include src test
+SUBDIRS = include src tests
 
 EXTRA_DIST =			\
 	xdg.dox			\
