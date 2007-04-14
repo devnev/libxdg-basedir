@@ -30,5 +30,6 @@ AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile
 				include/Makefile
 				src/Makefile
-				tests/Makefile])
+				tests/Makefile
+				libxdg-basedir.pc])
 AC_OUTPUT
