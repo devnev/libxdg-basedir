@@ -1,12 +1,20 @@
 AC_PREREQ(2.60)
 AC_INIT([libxdg-basedir], [0.1.0], mark.nevill@gmail.com)
 AM_INIT_AUTOMAKE([-Wall foreign])
-AC_ARG_VAR(HAS_DOXYGEN, "Is doxygen in PATH?")
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
-AC_CHECK_PROG([has_doxygen], [doxygen], [yes])
+# Configure Doxygen
+DX_HTML_FEATURE(ON)
+DX_CHM_FEATURE(OFF)
+DX_CHI_FEATURE(OFF)
+DX_MAN_FEATURE(OFF)
+DX_RTF_FEATURE(OFF)
+DX_XML_FEATURE(OFF)
+DX_PDF_FEATURE(OFF)
+DX_PS_FEATURE(OFF)
+DX_INIT_DOXYGEN([libxdg-basedir], [doxygen.cfg], doc)
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h])
@@ -17,9 +25,6 @@ AC_C_CONST
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset])
-
-AM_CONDITIONAL(HAS_DOXYGEN, test x$has_doxygen = xyes)
-
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([Makefile
 				include/Makefile
