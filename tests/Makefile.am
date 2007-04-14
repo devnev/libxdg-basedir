@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/include
+AM_CFLAGS = -I$(top_srcdir)/include
 
 noinst_PROGRAMS = testdump testfind
 
