@@ -43,6 +43,21 @@
 #  endif /* !HAVE_STRINGS_H */
 #endif /* !HAVE_STRING_H */
 
+#if defined _WIN32 && !defined __CYGWIN__
+   /* Use Windows separators on all _WIN32 defining
+      environments, except Cygwin. */
+#  define DIR_SEPARATOR_CHAR		'\\'
+#  define DIR_SEPARATOR_STR		"\\"
+#  define PATH_SEPARATOR_CHAR		';'
+#  define PATH_SEPARATOR_STR		";"
+#  define NO_ESCAPES_IN_PATHS
+#else
+#  define DIR_SEPARATOR_CHAR		'/'
+#  define DIR_SEPARATOR_STR		"/"
+#  define PATH_SEPARATOR_CHAR		':'
+#  define PATH_SEPARATOR_STR		":"
+#endif
+
 #include <stdarg.h>
 #include <basedir.h>
 
@@ -51,12 +66,12 @@
 #endif
 
 static const char
-	DefaultRelativeDataHome[] = "/.local/share",
-	DefaultRelativeConfigHome[] = "/.config",
-	DefaultDataDirectories1[] = "/usr/local/share",
-	DefaultDataDirectories2[] = "/usr/share",
-	DefaultConfigDirectories[] = "/etc/xdg",
-	DefaultRelativeCacheHome[] = "/.cache";
+	DefaultRelativeDataHome[] = DIR_SEPARATOR_STR ".local" DIR_SEPARATOR_STR "share",
+	DefaultRelativeConfigHome[] = DIR_SEPARATOR_STR ".config",
+	DefaultDataDirectories1[] = DIR_SEPARATOR_STR "usr" DIR_SEPARATOR_STR "local" DIR_SEPARATOR_STR "share",
+	DefaultDataDirectories2[] = DIR_SEPARATOR_STR "usr" DIR_SEPARATOR_STR "share",
+	DefaultConfigDirectories[] = DIR_SEPARATOR_STR "etc" DIR_SEPARATOR_STR "xdg",
+	DefaultRelativeCacheHome[] = DIR_SEPARATOR_STR ".cache";
 
 typedef struct _xdgCachedData
 {
@@ -161,8 +176,10 @@ static char** xdgSplitPath(const char* string)
 	size=2; /* One item more than seperators + terminating null item */
 	for (i = 0; string[i]; ++i)
 	{
+#ifndef NO_ESCAPES_IN_PATHS
 		if (string[i] == '\\' && string[i+1]) ++i; /* skip escaped characters including seperators */
-		else if (string[i] == ':') ++size;
+#endif
+		else if (string[i] == PATH_SEPARATOR_CHAR) ++size;
 	}
 	
 	if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return 0;
@@ -171,25 +188,30 @@ static char** xdgSplitPath(const char* string)
 	for (i = 0; *string; ++i)
 	{
 		/* get length of current string  */
-		for (j = 0; string[j] && string[j] != ':'; ++j)
-			if (string[j] == '\\' && string[j+1]) ++j;
+		for (j = 0; string[j] && string[j] != PATH_SEPARATOR_CHAR; ++j)
+#ifndef NO_ESCAPES_IN_PATHS
+			if (string[j] == '\\' && string[j+1]) ++j
+#endif
+			;
 	
 		if (!(itemlist[i] = (char*)malloc(j+1))) { xdgFreeStringList(itemlist); return 0; }
 
 		/* transfer string, unescaping any escaped seperators */
-		for (k = j = 0; string[j] && string[j] != ':'; ++j, ++k)
+		for (k = j = 0; string[j] && string[j] != PATH_SEPARATOR_CHAR; ++j, ++k)
 		{
-			if (string[j] == '\\' && string[j+1] == ':') ++j; /* replace escaped ':' with just ':' */
+#ifndef NO_ESCAPES_IN_PATHS
+			if (string[j] == '\\' && string[j+1] == PATH_SEPARATOR_CHAR) ++j; /* replace escaped ':' with just ':' */
 			else if (string[j] == '\\' && string[j+1]) /* skip escaped characters so escaping remains aligned to pairs. */
 			{
 				itemlist[i][k]=string[j];
 				++j, ++k;
 			}
+#endif
 			itemlist[i][k] = string[j];
 		}
 		/* move to next string */
 		string += j;
-		if (*string == ':') string++; /* skip seperator */
+		if (*string == PATH_SEPARATOR_CHAR) string++; /* skip seperator */
 	}
 	return itemlist;
 }
@@ -359,8 +381,8 @@ static const char* xdgFindExisting(const char * relativePath, const char * const
 			return 0;
 		}
 		strcpy(fullPath, *item);
-		if (fullPath[strlen(fullPath)-1] != '/')
-			strcat(fullPath, "/");
+		if (fullPath[strlen(fullPath)-1] != DIR_SEPARATOR_CHAR)
+			strcat(fullPath, DIR_SEPARATOR_STR);
 		strcat(fullPath, relativePath);
 		testFile = fopen(fullPath, "r");
 		if (testFile)
@@ -405,8 +427,8 @@ static FILE * xdgFileOpen(const char * relativePath, const char * mode, const ch
 		if (fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+2))
 			return 0;
 		strcpy(fullPath, *item);
-		if (fullPath[strlen(fullPath)-1] != '/')
-			strcat(fullPath, "/");
+		if (fullPath[strlen(fullPath)-1] != DIR_SEPARATOR_CHAR)
+			strcat(fullPath, DIR_SEPARATOR_STR);
 		strcat(fullPath, relativePath);
 		testFile = fopen(fullPath, mode);
 		free(fullPath);
@@ -460,3 +482,4 @@ FILE * xdgConfigOpen(const char * relativePath, const char * mode, xdgHandle han
 {
 	return xdgFileOpen(relativePath, mode, xdgSearchableConfigDirectories(handle));
 }
+
