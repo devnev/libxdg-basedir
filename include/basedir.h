@@ -29,7 +29,22 @@
 #ifndef XDG_BASEDIR_H
 #define XDG_BASEDIR_H
 
+#if !defined(__cplusplus) && !defined(__bool_true_false_are_defined)
+#if defined(STDC_HEADERS) || defined(HAVE_STDBOOL_H)
 #include <stdbool.h>
+#else
+#ifdef HAVE__BOOL
+#define bool _Bool
+#else
+#define bool int
+#endif // HAVE__BOOL
+#define true 1
+#define false 0
+#define XDG_BASEDIR_H_LOCAL_BOOL_DEFINE
+#define __bool_true_false_are_defined
+#endif // STDC_HEADERS || HAVE_STDBOOL_H
+#endif // !__cplusplus && !__bool_true_false_are_defined
+
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -155,6 +170,14 @@ FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handl
 
 #ifdef __cplusplus
 } // extern "C"
+#endif
+
+#ifdef XDG_BASEDIR_H_LOCAL_BOOL_DEFINE
+#undef bool
+#undef true
+#undef false
+#undef __bool_true_false_are_defined
+#undef XDG_BASEDIR_H_LOCAL_BOOL_DEFINE
 #endif
 
 #endif /*XDG_BASEDIR_H*/

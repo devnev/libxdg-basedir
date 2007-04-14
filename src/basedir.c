@@ -25,6 +25,10 @@
 /** @file basedir.c
   * @brief Implementation of the XDG basedir specification. */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
