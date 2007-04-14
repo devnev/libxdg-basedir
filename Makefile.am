@@ -1,7 +1,7 @@
 SUBDIRS = include src tests
 
 EXTRA_DIST =			\
-	xdg.dox			\
+	Doxyfile		\
 	autogen.sh
 
 include_HEADERS = include/basedir.h
@@ -11,6 +11,6 @@ include_HEADERS = include/basedir.h
 #	source-doc
 
 if HAS_DOXYGEN
-dox:
-	@doxygen xdg.dox > /dev/null && echo "Documentation generated"
+doc:
+	@doxygen Doxyfile > /dev/null && echo "Documentation generated"
 endif

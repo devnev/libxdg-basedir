@@ -1,8 +1,8 @@
 # Doxyfile 1.4.7
 
-PROJECT_NAME           = xdg-basedir
+PROJECT_NAME           = libxdg-basedir
 PROJECT_NUMBER         = 1
-OUTPUT_DIRECTORY       = xdg-dox
+OUTPUT_DIRECTORY       = libxdg-basedir-doc
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
 ALWAYS_DETAILED_SEC    = NO
@@ -274,7 +274,7 @@ TREEVIEW_WIDTH         = 250
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will 
 # generate Latex output.
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 
 LATEX_OUTPUT           = latex
 
@@ -357,7 +357,7 @@ MAN_LINKS              = NO
 # generate an XML file that captures the structure of 
 # the code including all documentation.
 
-GENERATE_XML           = YES
+GENERATE_XML           = NO
 
 # The XML_SCHEMA tag can be used to specify an XML schema, 
 # which can be used by a validating XML parser to check the 

@@ -1,5 +1,5 @@
 AC_PREREQ(2.60)
-AC_INIT([libxdg], [0.0.1], mark.nevill@gmail.com)
+AC_INIT([libxdg-basedir], [0.1.0], mark.nevill@gmail.com)
 AM_INIT_AUTOMAKE([-Wall foreign])
 AC_ARG_VAR(HAS_DOXYGEN, "Is doxygen in PATH?")
 # Checks for programs.
