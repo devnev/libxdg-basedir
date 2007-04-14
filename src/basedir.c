@@ -209,6 +209,7 @@ static char** xdgSplitPath(const char* string)
 #endif
 			itemlist[i][k] = string[j];
 		}
+		itemlist[i][k] = 0; // Bugfix provided by Diego 'Flameeyes' Pettenò
 		/* move to next string */
 		string += j;
 		if (*string == PATH_SEPARATOR_CHAR) string++; /* skip seperator */
