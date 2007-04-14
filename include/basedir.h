@@ -132,7 +132,7 @@ const char * xdgCacheHome(xdgHandle handle);
  *	@param relativePath Path to scan for.
  *	@param handle Handle to data cache.
  *	@return A sequence of null-terminated strings terminated by a double-null (empty string)
- *		and allocated using malloc().
+ *		and allocated using malloc(), e.g.: @code "/etc/share\0/home/jdoe/.local\0" @endcode
  */
 const char * xdgDataFind(const char* relativePath, xdgHandle handle);
 
@@ -142,7 +142,7 @@ const char * xdgDataFind(const char* relativePath, xdgHandle handle);
   * @param relativePath Path to scan for.
   * @param handle Handle to data cache.
   * @return A sequence of null-terminated strings terminated by a double-null (empty string)
-  * 	and allocated using malloc().
+  * 	and allocated using malloc(), e.g.: @code "/etc/xdg\0/home/jdoe/.config\0" @endcode
   */
 const char * xdgConfigFind(const char* relativePath, xdgHandle handle);
 
