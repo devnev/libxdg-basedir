@@ -1,2 +1,5 @@
 basedir.lo
-libxdg.la
+libxdg-basedir.la
+.deps
+.libs
+basedir.o
