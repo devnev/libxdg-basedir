@@ -29,7 +29,7 @@
 #ifndef XDG_BASEDIR_H
 #define XDG_BASEDIR_H
 
-#if !defined(__cplusplus) && !defined(__bool_true_false_are_defined)
+#if !defined(__cplusplus) && !defined(__bool_true_false_are_defined) && !defined(_DOXYGEN)
 #if defined(STDC_HEADERS) || defined(HAVE_STDBOOL_H)
 #include <stdbool.h>
 #else
