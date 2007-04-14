@@ -29,8 +29,20 @@
 #include <config.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
+#if STDC_HEADERS || HAVE_STDLIB_H
+#  include <stdlib.h>
+#endif
+#if HAVE_MEMORY_H
+#  include <memory.h>
+#endif
+#if HAVE_STRING_H
+#  include <string.h>
+#else
+#  if HAVE_STRINGS_H
+#    include <strings.h>
+#  endif /* !HAVE_STRINGS_H */
+#endif /* !HAVE_STRING_H */
+
 #include <stdarg.h>
 #include <basedir.h>
 
