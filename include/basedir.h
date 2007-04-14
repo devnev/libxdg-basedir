@@ -127,13 +127,13 @@ const char * xdgCacheHome(xdgHandle handle);
 /*@{*/
 
 /** Find all existing data files corresponding to relativePath.
- *	Consider as performing @code fopen(filename, "r") @endcode on every possible @c filename
- *		and returning the successful <tt>filename</tt>s.
- *	@param relativePath Path to scan for.
- *	@param handle Handle to data cache.
- *	@return A sequence of null-terminated strings terminated by a double-null (empty string)
- *		and allocated using malloc(), e.g.: @code "/etc/share\0/home/jdoe/.local\0" @endcode
- */
+  * Consider as performing @code fopen(filename, "r") @endcode on every possible @c filename
+  * 	and returning the successful <tt>filename</tt>s.
+  * @param relativePath Path to scan for.
+  * @param handle Handle to data cache.
+  * @return A sequence of null-terminated strings terminated by a double-null (empty string)
+  * 	and allocated using malloc(), e.g.: @code "/etc/share\0/home/jdoe/.local\0" @endcode
+  */
 const char * xdgDataFind(const char* relativePath, xdgHandle handle);
 
 /** Find all existing config files corresponding to relativePath.
