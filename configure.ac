@@ -17,7 +17,8 @@ DX_PS_FEATURE(OFF)
 DX_INIT_DOXYGEN([libxdg-basedir], [doxygen.cfg], doc)
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h string.h])
+AC_CHECK_HEADERS([stdlib.h string.h stdarg.h])
+AC_CHECK_FUNCS([strcpy getenv])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
