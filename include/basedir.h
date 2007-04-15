@@ -65,7 +65,8 @@ typedef struct /*_xdgHandle*/ {
 } *xdgHandle;
 
 /** Get a handle to an XDG data cache and initialize the cache.
-  * Use xdgFreeHandle() to free the handle. */
+  * Use xdgFreeHandle() to free the handle.
+  * @return a handle if allocation was successful, else 0 */
 xdgHandle xdgAllocHandle();
 
 /** Free handle to XDG data cache.
@@ -80,20 +81,22 @@ void xdgFreeHandle(xdgHandle handle);
 bool xdgUpdateData(xdgHandle handle);
 
 /*@}*/
-/** @name Basic XDG-Basedir Queries */
+/** @name Basic XDG Base Directory Queries */
 /*@{*/
 
 /** Base directory for user specific data files.
-  * "${XDG_DATA_HOME:-$HOME/.local/share}" */
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @return a path as described by the standards. */
 const char * xdgDataHome(xdgHandle handle);
 
 /** Base directory for user specific configuration files.
-  * "${XDG_CONFIG_HOME:-$HOME/.config}" */
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @return a path as described by the standards. */
 const char * xdgConfigHome(xdgHandle handle);
 
 /** Preference-ordered set of base directories to search for data files
   * in addition to the $XDG_DATA_HOME base directory.
-  * "${XDG_DATA_DIRS:-/usr/local/share/:/usr/share/}".
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return A null-terminated list of directory strings. */
 const char * const * xdgDataDirectories(xdgHandle handle);
 
@@ -101,12 +104,13 @@ const char * const * xdgDataDirectories(xdgHandle handle);
   * with $XDG_DATA_HOME prepended.
   * The base directory defined by $XDG_DATA_HOME is considered more
   * important than any of the base directories defined by $XDG_DATA_DIRS.
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return A null-terminated list of directory strings. */
 const char * const * xdgSearchableDataDirectories(xdgHandle handle);
 
 /** Preference-ordered set of base directories to search for configuration
   * files in addition to the $XDG_CONFIG_HOME base directory.
-  * "${XDG_CONFIG_DIRS:-/etc/xdg}".
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return A null-terminated list of directory strings. */
 const char * const * xdgConfigDirectories(xdgHandle handle);
 
@@ -114,23 +118,25 @@ const char * const * xdgConfigDirectories(xdgHandle handle);
   * files with $XDG_CONFIG_HOME prepended.
   * The base directory defined by $XDG_CONFIG_HOME is considered more
   * important than any of the base directories defined by $XDG_CONFIG_DIRS.
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return A null-terminated list of directory strings. */
 const char * const * xdgSearchableConfigDirectories(xdgHandle handle);
 
 /** Base directory for user specific non-essential data files.
-  * "${XDG_CACHE_HOME:-$HOME/.cache}" */
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @return a path as described by the standards. */
 const char * xdgCacheHome(xdgHandle handle);
 
 /*@}*/
 
-/** @name Higher-level XDG-Basedir Queries */
+/** @name Higher-level XDG Base Directory Queries */
 /*@{*/
 
 /** Find all existing data files corresponding to relativePath.
   * Consider as performing @code fopen(filename, "r") @endcode on every possible @c filename
   * 	and returning the successful <tt>filename</tt>s.
   * @param relativePath Path to scan for.
-  * @param handle Handle to data cache.
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return A sequence of null-terminated strings terminated by a double-null (empty string)
   * 	and allocated using malloc(), e.g.: @code "/etc/share\0/home/jdoe/.local\0" @endcode
   */
@@ -140,7 +146,7 @@ const char * xdgDataFind(const char* relativePath, xdgHandle handle);
   * Consider as performing @code fopen(filename, "r") @endcode on every possible @c filename
   * 	and returning the successful <tt>filename</tt>s.
   * @param relativePath Path to scan for.
-  * @param handle Handle to data cache.
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return A sequence of null-terminated strings terminated by a double-null (empty string)
   * 	and allocated using malloc(), e.g.: @code "/etc/xdg\0/home/jdoe/.config\0" @endcode
   */
@@ -151,7 +157,7 @@ const char * xdgConfigFind(const char* relativePath, xdgHandle handle);
   * 	and returning the first successful @c filename or @c NULL.
   * @param relativePath Path to scan for.
   * @param mode Mode with which to attempt to open files (see fopen modes).
-  * @param handle Handle to data cache.
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return File pointer if successful else @c NULL. Client must use @c fclose to close file.
   */
 FILE * xdgDataOpen(const char* relativePath, const char* mode, xdgHandle handle);
@@ -161,7 +167,7 @@ FILE * xdgDataOpen(const char* relativePath, const char* mode, xdgHandle handle)
   * 	and returning the first successful @c filename or @c NULL.
   * @param relativePath Path to scan for.
   * @param mode Mode with which to attempt to open files (see fopen modes).
-  * @param handle Handle to data cache.
+  * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return File pointer if successful else @c NULL. Client must use @c fclose to close file.
   */
 FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handle);
