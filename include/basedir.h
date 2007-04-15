@@ -23,17 +23,17 @@
  */
 
 /** @file basedir.h
-  * @brief Functions for using the XDG basedir specification.
+  * @brief Functions for using the XDG Base Directory specification.
   * See http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html for details. */ 
 
 #ifndef XDG_BASEDIR_H
 #define XDG_BASEDIR_H
 
-#if !defined(__cplusplus) && !defined(__bool_true_false_are_defined) && !defined(_DOXYGEN)
-#if defined(STDC_HEADERS) || defined(HAVE_STDBOOL_H)
+#if !defined(__cplusplus) && !defined(__bool_true_false_are_defined)
+#if STDC_HEADERS || HAVE_STDBOOL_H || defined(_DOXYGEN)
 #include <stdbool.h>
 #else
-#ifdef HAVE__BOOL
+#if HAVE__BOOL
 #define bool _Bool
 #else
 #define bool int
@@ -42,7 +42,7 @@
 #define false 0
 #define XDG_BASEDIR_H_LOCAL_BOOL_DEFINE
 #define __bool_true_false_are_defined
-#endif // STDC_HEADERS || HAVE_STDBOOL_H
+#endif // STDC_HEADERS || HAVE_STDBOOL_H || _DOXYGEN
 #endif // !__cplusplus && !__bool_true_false_are_defined
 
 #include <stdio.h>
@@ -51,7 +51,7 @@
 extern "C" {
 #endif
 
-/** Version of XDG basedir-spec implemented in this library. */
+/** Version of XDG Base Directory specification implemented in this library. */
 #define XDG_BASEDIR_SPEC 0.6
 
 /** @name XDG data cache management */

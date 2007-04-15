@@ -23,9 +23,9 @@
  */
 
 /** @file basedir.c
-  * @brief Implementation of the XDG basedir specification. */
+  * @brief Implementation of the XDG Base Directory specification. */
 
-#ifdef HAVE_CONFIG_H
+#if defined(HAVE_CONFIG_H) || defined(_DOXYGEN)
 #include <config.h>
 #endif
 
@@ -209,7 +209,7 @@ static char** xdgSplitPath(const char* string)
 #endif
 			itemlist[i][k] = string[j];
 		}
-		itemlist[i][k] = 0; // Bugfix provided by Diego 'Flameeyes' Pettenò
+		itemlist[i][k] = 0; /* Bugfix provided by Diego 'Flameeyes' Pettenò */
 		/* move to next string */
 		string += j;
 		if (*string == PATH_SEPARATOR_CHAR) string++; /* skip seperator */
