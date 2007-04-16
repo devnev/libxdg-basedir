@@ -61,6 +61,7 @@ extern "C" {
   * Handles are allocated with xdgAllocHandle() and
   * freed with xdgFreeHandle(). */
 typedef struct /*_xdgHandle*/ {
+	/** Reserved for internal use, do not modify. */
 	void *reserved;
 } *xdgHandle;
 
