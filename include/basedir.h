@@ -22,9 +22,23 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/** @mainpage
+ *
+ * <div style="margin: 2em 5em 2em 5em; border: 1px solid #CCC; padding: 1em; background: #E8EEF2;">
+ * Various specifications specify files and file formats. The <a
+ * href="http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html">
+ * XDG Base Directory specification</a> defines where these files should
+ * be looked for by defining one or more base directories relative to
+ * which files should be located.
+ * </div>
+ *
+ * This library implements functions to list the directories according
+ * to the specification and provides a few higher-level functions for
+ * use with the specification.
+ */
+
 /** @file basedir.h
-  * @brief Functions for using the XDG Base Directory specification.
-  * See http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html for details. */ 
+  * Functions for using the XDG Base Directory specification. */ 
 
 #ifndef XDG_BASEDIR_H
 #define XDG_BASEDIR_H
