@@ -51,12 +51,12 @@
 #define false 0
 #define true 1
 
-#if HAVE_MEMSET
+#if HAVE_MEMSET || !defined(HAVE_CONFIG_H)
 #  define xdgZeroMemory(p, n) memset(p, 0, n)
 #elif HAVE_BZERO
 #  define xdgZeroMemory(p, n) bzero(p, n)
 #else
-void xdgZeroMemory(void* p, size_t n)
+static void xdgZeroMemory(void* p, size_t n)
 {
 	while (n > 0) { ((char*)p)[n] = 0; ++n; }
 }
