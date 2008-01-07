@@ -43,6 +43,17 @@
 #  endif /* !HAVE_STRINGS_H */
 #endif /* !HAVE_STRING_H */
 
+#if HAVE_MEMSET
+#  define xdgZeroMemory(p, n) memset(p, 0, n)
+#elif HAVE_BZERO
+#  define xdgZeroMemory(p, n) bzero(p, n)
+#else
+void xdgZeroMemory(void* p, size_t n)
+{
+	while (n > 0) { ((char*)p)[n] = 0; ++n; }
+}
+#endif
+
 #if defined _WIN32 && !defined __CYGWIN__
    /* Use Windows separators on all _WIN32 defining
       environments, except Cygwin. */
@@ -187,7 +198,7 @@ static char** xdgSplitPath(const char* string)
 	}
 	
 	if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return 0;
-	memset(itemlist, 0, sizeof(char*)*size);
+	xdgZeroMemory(itemlist, sizeof(char*)*size);
 
 	for (i = 0; *string; ++i)
 	{
@@ -247,7 +258,7 @@ static char** xdgGetPathListEnv(const char* name, const char ** strings)
 		if (!strings) return NULL;
 		for (size = 0; strings[size]; ++size) ; ++size;
 		if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return NULL;
-		memset(itemlist, 0, sizeof(char*)*(size));
+		xdgZeroMemory(itemlist, sizeof(char*)*(size));
 
 		/* Copy defaults into itemlist. */
 		/* Why all this funky stuff? So the result can be handled uniformly by xdgFreeStringList. */
@@ -341,7 +352,7 @@ bool xdgUpdateData(xdgHandle handle)
 {
 	xdgCachedData* cache = (xdgCachedData*)malloc(sizeof(xdgCachedData));
 	if (!cache) return false;
-	memset(cache, 0, sizeof(xdgCachedData));
+	xdgZeroMemory(cache, sizeof(xdgCachedData));
 
 	if (xdgUpdateHomeDirectories(cache) &&
 		xdgUpdateDirectoryLists(cache))
