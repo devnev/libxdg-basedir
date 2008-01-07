@@ -42,14 +42,14 @@
 #  include <strings.h>
 #endif
 
-#ifdef false
-#undef false
+#ifdef FALSE
+#undef FALSE
 #endif
-#ifdef true
-#undef true
+#ifdef TRUE
+#undef TRUE
 #endif
-#define false 0
-#define true 1
+#define FALSE 0
+#define TRUE 1
 
 #if HAVE_MEMSET || !defined(HAVE_CONFIG_H)
 #  define xdgZeroMemory(p, n) memset(p, 0, n)
@@ -294,31 +294,31 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 
 	env = getenv("HOME");
 	if (!env || !env[0])
-		return false;
-	if (!(home = (char*)malloc(strlen(env)+1))) return false;
+		return FALSE;
+	if (!(home = (char*)malloc(strlen(env)+1))) return FALSE;
 	strcpy(home, env);
 
 	/* Allocate maximum needed for any of the 3 default values */
 	defVal = (char*)malloc(strlen(home)+
 		MAX(MAX(sizeof(DefaultRelativeDataHome), sizeof(DefaultRelativeConfigHome)), sizeof(DefaultRelativeCacheHome)));
-	if (!defVal) return false;
+	if (!defVal) return FALSE;
 
 	strcpy(defVal, home);
 	strcat(defVal, DefaultRelativeDataHome);
-	if (!(cache->dataHome = xdgGetEnv("XDG_DATA_HOME", defVal))) return false;
+	if (!(cache->dataHome = xdgGetEnv("XDG_DATA_HOME", defVal))) return FALSE;
 
 	defVal[strlen(home)] = 0;
 	strcat(defVal, DefaultRelativeConfigHome);
-	if (!(cache->configHome = xdgGetEnv("XDG_CONFIG_HOME", defVal))) return false;
+	if (!(cache->configHome = xdgGetEnv("XDG_CONFIG_HOME", defVal))) return FALSE;
 
 	defVal[strlen(home)] = 0;
 	strcat(defVal, DefaultRelativeCacheHome);
-	if (!(cache->cacheHome = xdgGetEnv("XDG_CACHE_HOME", defVal))) return false;
+	if (!(cache->cacheHome = xdgGetEnv("XDG_CACHE_HOME", defVal))) return FALSE;
 
 	free(defVal);
 	free(home);
 
-	return true;
+	return TRUE;
 }
 
 /** Update all *Directories variables of cache.
@@ -332,12 +332,12 @@ static int xdgUpdateDirectoryLists(xdgCachedData* cache)
 
 	itemlist = xdgGetPathListEnv("XDG_DATA_DIRS", DefaultDataDirectoriesList);
 
-	if (!itemlist) return false;
+	if (!itemlist) return FALSE;
 	for (size = 0; itemlist[size]; size++) ; /* Get list size */
 	if (!(cache->searchableDataDirectories = (char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
-		return false;
+		return FALSE;
 	}
 	/* "home" directory has highest priority according to spec */
 	cache->searchableDataDirectories[0] = cache->dataHome;
@@ -345,25 +345,25 @@ static int xdgUpdateDirectoryLists(xdgCachedData* cache)
 	free(itemlist);
 	
 	itemlist = xdgGetPathListEnv("XDG_CONFIG_DIRS", DefaultConfigDirectoriesList);
-	if (!itemlist) return false;
+	if (!itemlist) return FALSE;
 	for (size = 0; itemlist[size]; size++) ; /* Get list size */
 	if (!(cache->searchableConfigDirectories = (char**)malloc(sizeof(char*)*(size+2))))
 	{
 		xdgFreeStringList(itemlist);
-		return false;
+		return FALSE;
 	}
 	cache->searchableConfigDirectories[0] = cache->configHome;
 	memcpy(&(cache->searchableConfigDirectories[1]), itemlist, sizeof(char*)*(size+1));
 	free(itemlist);
 
-	return true;
+	return TRUE;
 }
 
 int xdgUpdateData(xdgHandle handle)
 {
 	xdgCachedData* cache = (xdgCachedData*)malloc(sizeof(xdgCachedData));
 	xdgCachedData* oldCache;
-	if (!cache) return false;
+	if (!cache) return FALSE;
 	xdgZeroMemory(cache, sizeof(xdgCachedData));
 
 	if (xdgUpdateHomeDirectories(cache) &&
@@ -377,14 +377,14 @@ int xdgUpdateData(xdgHandle handle)
 			xdgFreeData(oldCache);
 			free(oldCache);
 		}
-		return true;
+		return TRUE;
 	}
 	else
 	{
 		/* Update failed, discard new cache and leave old cache unmodified */
 		xdgFreeData(cache);
 		free(cache);
-		return false;
+		return FALSE;
 	}
 }
 
