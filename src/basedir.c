@@ -43,6 +43,15 @@
 #  endif /* !HAVE_STRINGS_H */
 #endif /* !HAVE_STRING_H */
 
+#ifdef false
+#undef false
+#endif
+#ifdef true
+#undef true
+#endif
+#define false 0
+#define true 1
+
 #if HAVE_MEMSET
 #  define xdgZeroMemory(p, n) memset(p, 0, n)
 #elif HAVE_BZERO
@@ -275,7 +284,7 @@ static char** xdgGetPathListEnv(const char* name, const char ** strings)
  * This includes xdgCachedData::dataHome, xdgCachedData::configHome and xdgCachedData::cacheHome.
  * @param cache Data cache to be updated
  */
-static bool xdgUpdateHomeDirectories(xdgCachedData* cache)
+static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 {
 	const char* env;
 	char* home, *defVal;
@@ -313,7 +322,7 @@ static bool xdgUpdateHomeDirectories(xdgCachedData* cache)
  * This includes xdgCachedData::searchableDataDirectories and xdgCachedData::searchableConfigDirectories.
  * @param cache Data cache to be updated.
  */
-static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
+static int xdgUpdateDirectoryLists(xdgCachedData* cache)
 {
 	char** itemlist;
 	int size;
@@ -347,7 +356,7 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 	return true;
 }
 
-bool xdgUpdateData(xdgHandle handle)
+int xdgUpdateData(xdgHandle handle)
 {
 	xdgCachedData* cache = (xdgCachedData*)malloc(sizeof(xdgCachedData));
 	if (!cache) return false;

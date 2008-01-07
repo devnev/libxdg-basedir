@@ -43,22 +43,6 @@
 #ifndef XDG_BASEDIR_H
 #define XDG_BASEDIR_H
 
-#if !defined(__cplusplus) && !defined(__bool_true_false_are_defined)
-#if STDC_HEADERS || HAVE_STDBOOL_H || defined(_DOXYGEN)
-#include <stdbool.h>
-#else
-#if HAVE__BOOL
-#define bool _Bool
-#else
-#define bool int
-#endif // HAVE__BOOL
-#define true 1
-#define false 0
-#define XDG_BASEDIR_H_LOCAL_BOOL_DEFINE
-#define __bool_true_false_are_defined
-#endif // STDC_HEADERS || HAVE_STDBOOL_H || _DOXYGEN
-#endif // !__cplusplus && !__bool_true_false_are_defined
-
 #include <stdio.h>
 
 #ifdef __cplusplus
@@ -93,7 +77,7 @@ void xdgFreeHandle(xdgHandle handle);
   * Even if updating the cache fails the handle remains valid and can
   * be used to access XDG data as it was before xdgUpdateData() was called.
   * @return 0 if update failed, non-0 if successful.*/
-bool xdgUpdateData(xdgHandle handle);
+int xdgUpdateData(xdgHandle handle);
 
 /*@}*/
 /** @name Basic XDG Base Directory Queries */
@@ -191,14 +175,6 @@ FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handl
 
 #ifdef __cplusplus
 } // extern "C"
-#endif
-
-#ifdef XDG_BASEDIR_H_LOCAL_BOOL_DEFINE
-#undef bool
-#undef true
-#undef false
-#undef __bool_true_false_are_defined
-#undef XDG_BASEDIR_H_LOCAL_BOOL_DEFINE
 #endif
 
 #endif /*XDG_BASEDIR_H*/
