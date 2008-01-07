@@ -29,19 +29,18 @@
 #include <config.h>
 #endif
 
-#if STDC_HEADERS || HAVE_STDLIB_H
+#if STDC_HEADERS || HAVE_STDLIB_H || !defined(HAVE_CONFIG_H)
 #  include <stdlib.h>
 #endif
-#if HAVE_MEMORY_H
+#if HAVE_MEMORY_H || !defined(HAVE_CONFIG_H)
 #  include <memory.h>
 #endif
-#if HAVE_STRING_H
+#if HAVE_STRING_H || !defined(HAVE_CONFIG_H)
 #  include <string.h>
-#else
-#  if HAVE_STRINGS_H
-#    include <strings.h>
-#  endif /* !HAVE_STRINGS_H */
-#endif /* !HAVE_STRING_H */
+#endif
+#if HAVE_STRINGS_H
+#  include <strings.h>
+#endif
 
 #ifdef false
 #undef false
