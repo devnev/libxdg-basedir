@@ -69,7 +69,6 @@ void xdgZeroMemory(void* p, size_t n)
 #  define PATH_SEPARATOR_STR		":"
 #endif
 
-#include <stdarg.h>
 #include <basedir.h>
 
 #ifndef MAX
