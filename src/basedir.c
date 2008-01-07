@@ -108,7 +108,11 @@ typedef struct _xdgCachedData
 	char ** searchableConfigDirectories; 
 } xdgCachedData;
 
-#define GET_CACHE(handle) ((xdgCachedData*)(handle->reserved))
+/** Get cache object associated with a handle */
+static xdgCachedData* xdgGetCache(xdgHandle handle)
+{
+	return ((xdgCachedData*)(handle->reserved));
+}
 
 xdgHandle xdgAllocHandle()
 {
@@ -460,31 +464,31 @@ static FILE * xdgFileOpen(const char * relativePath, const char * mode, const ch
 
 const char * xdgDataHome(xdgHandle handle)
 {
-	return GET_CACHE(handle)->dataHome;
+	return xdgGetCache(handle)->dataHome;
 }
 const char * xdgConfigHome(xdgHandle handle)
 {
-	return GET_CACHE(handle)->configHome;
+	return xdgGetCache(handle)->configHome;
 }
 const char * const * xdgDataDirectories(xdgHandle handle)
 {
-	return &(GET_CACHE(handle)->searchableDataDirectories[1]);
+	return &(xdgGetCache(handle)->searchableDataDirectories[1]);
 }
 const char * const * xdgSearchableDataDirectories(xdgHandle handle)
 {
-	return GET_CACHE(handle)->searchableDataDirectories;
+	return xdgGetCache(handle)->searchableDataDirectories;
 }
 const char * const * xdgConfigDirectories(xdgHandle handle)
 {
-	return &(GET_CACHE(handle)->searchableConfigDirectories[1]);
+	return &(xdgGetCache(handle)->searchableConfigDirectories[1]);
 }
 const char * const * xdgSearchableConfigDirectories(xdgHandle handle)
 {
-	return GET_CACHE(handle)->searchableConfigDirectories;
+	return xdgGetCache(handle)->searchableConfigDirectories;
 }
 const char * xdgCacheHome(xdgHandle handle)
 {
-	return GET_CACHE(handle)->cacheHome;
+	return xdgGetCache(handle)->cacheHome;
 }
 const char * xdgDataFind(const char * relativePath, xdgHandle handle)
 {
