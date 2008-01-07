@@ -160,7 +160,7 @@ static void xdgFreeData(xdgCachedData *cache)
 
 void xdgFreeHandle(xdgHandle handle)
 {
-	xdgCachedData* cache = (xdgCachedData*)(handle->reserved);
+	xdgCachedData* cache = xdgGetCache(handle);
 	xdgFreeData(cache);
 	free(cache);
 	free(handle);
@@ -362,6 +362,7 @@ static int xdgUpdateDirectoryLists(xdgCachedData* cache)
 int xdgUpdateData(xdgHandle handle)
 {
 	xdgCachedData* cache = (xdgCachedData*)malloc(sizeof(xdgCachedData));
+	xdgCachedData* oldCache;
 	if (!cache) return false;
 	xdgZeroMemory(cache, sizeof(xdgCachedData));
 
@@ -369,8 +370,13 @@ int xdgUpdateData(xdgHandle handle)
 		xdgUpdateDirectoryLists(cache))
 	{
 		/* Update successful, replace pointer to old cache with pointer to new cache */
-		if (handle->reserved) free(handle->reserved);
+		oldCache = xdgGetCache(handle);
 		handle->reserved = cache;
+		if (oldCache)
+		{
+			xdgFreeData(oldCache);
+			free(oldCache);
+		}
 		return true;
 	}
 	else
