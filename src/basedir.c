@@ -73,6 +73,10 @@ static const char
 	DefaultConfigDirectories[] = DIR_SEPARATOR_STR "etc" DIR_SEPARATOR_STR "xdg",
 	DefaultRelativeCacheHome[] = DIR_SEPARATOR_STR ".cache";
 
+static const char
+	*DefaultDataDirectoriesList[] = { DefaultDataDirectories1, DefaultDataDirectories2, NULL },
+	*DefaultConfigDirectoriesList[] = { DefaultConfigDirectories, NULL };
+
 typedef struct _xdgCachedData
 {
 	char * dataHome;
@@ -220,22 +224,19 @@ static char** xdgSplitPath(const char* string)
 /** Get $PATH-style environment variable as list of strings.
  * If $name is unset or empty, use default strings specified by variable arguments.
  * @param name Name of environment variable
- * @param numDefaults Number of default paths in variable argument list
- * @param ... numDefaults number of strings to be copied and used as defaults
+ * @param strings NULL-terminated list of strings to be copied and used as defaults
  */
-static char** xdgGetPathListEnv(const char* name, int numDefaults, ...)
+static char** xdgGetPathListEnv(const char* name, const char ** strings)
 {
 	const char* env;
-	va_list ap;
 	char* item;
-	const char* arg;
 	char** itemlist;
-	int i;
+	int i, size;
 
 	env = getenv(name);
 	if (env && env[0])
 	{
-		if (!(item = (char*)malloc(strlen(env)+1))) return 0;
+		if (!(item = (char*)malloc(strlen(env)+1))) return NULL;
 		strcpy(item, env);
 
 		itemlist = xdgSplitPath(item);
@@ -243,19 +244,19 @@ static char** xdgGetPathListEnv(const char* name, int numDefaults, ...)
 	}
 	else
 	{
-		if (!(itemlist = (char**)malloc(sizeof(char*)*numDefaults+1))) return 0;
-		memset(itemlist, 0, sizeof(char*)*(numDefaults+1));
+		if (!strings) return NULL;
+		for (size = 0; strings[size]; ++size) ; ++size;
+		if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return NULL;
+		memset(itemlist, 0, sizeof(char*)*(size));
 
-		/* Copy the varargs into the itemlist */
-		va_start(ap, numDefaults);
-		for (i = 0; i < numDefaults; i++)
+		/* Copy defaults into itemlist. */
+		/* Why all this funky stuff? So the result can be handled uniformly by xdgFreeStringList. */
+		for (i = 0; strings[i]; ++i)
 		{
-			arg = va_arg(ap, const char*);
-			if (!(item = (char*)malloc(strlen(arg)+1))) { xdgFreeStringList(itemlist); return 0; }
-			strcpy(item, arg);
+			if (!(item = (char*)malloc(strlen(strings[i])+1))) { xdgFreeStringList(itemlist); return NULL; }
+			strcpy(item, strings[i]);
 			itemlist[i] = item;
 		}
-		va_end(ap);
 	}
 	return itemlist;
 }
@@ -307,8 +308,8 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 	char** itemlist;
 	int size;
 
-	itemlist = xdgGetPathListEnv("XDG_DATA_DIRS", 2,
-			DefaultDataDirectories1, DefaultDataDirectories2);
+	itemlist = xdgGetPathListEnv("XDG_DATA_DIRS", DefaultDataDirectoriesList);
+
 	if (!itemlist) return false;
 	for (size = 0; itemlist[size]; size++) ; /* Get list size */
 	if (!(cache->searchableDataDirectories = (char**)malloc(sizeof(char*)*(size+2))))
@@ -321,7 +322,7 @@ static bool xdgUpdateDirectoryLists(xdgCachedData* cache)
 	memcpy(&(cache->searchableDataDirectories[1]), itemlist, sizeof(char*)*(size+1));
 	free(itemlist);
 	
-	itemlist = xdgGetPathListEnv("XDG_CONFIG_DIRS", 1, DefaultConfigDirectories);
+	itemlist = xdgGetPathListEnv("XDG_CONFIG_DIRS", DefaultConfigDirectoriesList);
 	if (!itemlist) return false;
 	for (size = 0; itemlist[size]; size++) ; /* Get list size */
 	if (!(cache->searchableConfigDirectories = (char**)malloc(sizeof(char*)*(size+2))))
