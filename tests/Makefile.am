@@ -1,6 +1,8 @@
 AM_CFLAGS = -I$(top_srcdir)/include
 
-noinst_PROGRAMS = testdump testfind
+check_PROGRAMS = testdump testfind
+
+TESTS = testdump
 
 testdump_SOURCES = testdump.c
 testdump_LDFLAGS = $(all_libraries)
