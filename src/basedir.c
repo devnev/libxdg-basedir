@@ -203,9 +203,14 @@ static char** xdgSplitPath(const char* string)
 	for (i = 0; string[i]; ++i)
 	{
 #ifndef NO_ESCAPES_IN_PATHS
-		if (string[i] == '\\' && string[i+1]) ++i; /* skip escaped characters including seperators */
+		if (string[i] == '\\' && string[i+1])
+		{
+			/* skip escaped characters including seperators */
+			++i;
+			continue;
+		}
 #endif
-		else if (string[i] == PATH_SEPARATOR_CHAR) ++size;
+		if (string[i] == PATH_SEPARATOR_CHAR) ++size;
 	}
 	
 	if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return 0;
