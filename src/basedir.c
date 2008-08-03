@@ -454,7 +454,7 @@ static FILE * xdgFileOpen(const char * relativePath, const char * mode, const ch
 
 	for (item = dirList; *item; item++)
 	{
-		if (fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+2))
+		if (!(fullPath = (char*)malloc(strlen(*item)+strlen(relativePath)+2)))
 			return 0;
 		strcpy(fullPath, *item);
 		if (fullPath[strlen(fullPath)-1] != DIR_SEPARATOR_CHAR)
