@@ -75,6 +75,7 @@ static void xdgZeroMemory(void* p, size_t n)
 #  define DIR_SEPARATOR_STR		"/"
 #  define PATH_SEPARATOR_CHAR		':'
 #  define PATH_SEPARATOR_STR		":"
+#  define NO_ESCAPES_IN_PATHS
 #endif
 
 #include <basedir.h>
