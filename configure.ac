@@ -31,5 +31,6 @@ AC_CONFIG_FILES([Makefile
 				include/Makefile
 				src/Makefile
 				tests/Makefile
-				libxdg-basedir.pc])
+				pkgconfig/libxdg-basedir.pc
+				pkgconfig/libxdg-basedir-uninstalled.pc])
 AC_OUTPUT
