@@ -403,7 +403,7 @@ int xdgUpdateData(xdgHandle handle)
   * @return A sequence of null-terminated strings terminated by a
   * 	double-<tt>NULL</tt> (empty string) and allocated using malloc().
   */
-static const char* xdgFindExisting(const char * relativePath, const char * const * dirList)
+static char * xdgFindExisting(const char * relativePath, const char * const * dirList)
 {
 	char * fullPath;
 	char * returnString = 0;
@@ -543,11 +543,11 @@ const char * xdgCacheHome(xdgHandle handle)
 {
 	return xdgGetCache(handle)->cacheHome;
 }
-const char * xdgDataFind(const char * relativePath, xdgHandle handle)
+char * xdgDataFind(const char * relativePath, xdgHandle handle)
 {
 	return xdgFindExisting(relativePath, xdgSearchableDataDirectories(handle));
 }
-const char * xdgConfigFind(const char * relativePath, xdgHandle handle)
+char * xdgConfigFind(const char * relativePath, xdgHandle handle)
 {
 	return xdgFindExisting(relativePath, xdgSearchableConfigDirectories(handle));
 }

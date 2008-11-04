@@ -47,7 +47,7 @@ extern "C" {
   * @return A sequence of null-terminated strings terminated by a double-null (empty string)
   * 	and allocated using malloc(), e.g.: @code "/etc/share\0/home/jdoe/.local\0" @endcode
   */
-const char * xdgDataFind(const char* relativePath, xdgHandle handle);
+char * xdgDataFind(const char* relativePath, xdgHandle handle);
 
 /** Find all existing config files corresponding to relativePath.
   * Consider as performing @code fopen(filename, "r") @endcode on every possible @c filename
@@ -57,7 +57,7 @@ const char * xdgDataFind(const char* relativePath, xdgHandle handle);
   * @return A sequence of null-terminated strings terminated by a double-null (empty string)
   * 	and allocated using malloc(), e.g.: @code "/etc/xdg\0/home/jdoe/.config\0" @endcode
   */
-const char * xdgConfigFind(const char* relativePath, xdgHandle handle);
+char * xdgConfigFind(const char* relativePath, xdgHandle handle);
 
 /** Open first possible data file corresponding to relativePath.
   * Consider as performing @code fopen(filename, mode) @endcode on every possible @c filename

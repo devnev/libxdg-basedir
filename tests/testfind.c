@@ -27,9 +27,9 @@
 #include <string.h>
 #include <basedir_fs.h>
 
-void printAndFreeStrings(const char * strings)
+void printAndFreeStrings(char * strings)
 {
-	const char * ptr = strings;
+	char * ptr = strings;
 	if (!strings) return;
 	while (*ptr)
 	{
