@@ -24,7 +24,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <basedir.h>
+#include <basedir_fs.h>
 
 void printAndFreeStrings(const char * strings)
 {
