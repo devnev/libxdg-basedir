@@ -44,6 +44,7 @@
 #define XDG_BASEDIR_H
 
 #include <stdio.h>
+#include <sys/types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -170,6 +171,18 @@ FILE * xdgDataOpen(const char* relativePath, const char* mode, xdgHandle handle)
   * @return File pointer if successful else @c NULL. Client must use @c fclose to close file.
   */
 FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handle);
+
+/** Create path by recursively creating directories.
+  * This utility function is not part of the XDG specification, but
+  * nevertheless useful in context of directory manipulation.
+  * @param path The path to be created.
+  * @param mode The permissions to use for created directories. This parameter
+  * 	is modified by the process's umask. For details, see mkdir(2)'s mode
+  * 	parameter.
+  * @return Zero on success, -1 if an error occured (in which case errno will
+  * 	be set appropriately)
+  */
+int xdgMakePath(const char * path, mode_t mode);
 
 /*@}*/
 

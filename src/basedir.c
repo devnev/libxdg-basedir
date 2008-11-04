@@ -42,6 +42,8 @@
 #  include <strings.h>
 #endif
 
+#include <errno.h>
+
 #ifdef FALSE
 #undef FALSE
 #endif
@@ -472,6 +474,44 @@ static FILE * xdgFileOpen(const char * relativePath, const char * mode, const ch
 			return testFile;
 	}
 	return 0;
+}
+
+int xdgMakePath(const char * path, mode_t mode)
+{
+	int length = strlen(path);
+	char * tmpPath;
+	char * tmpPtr;
+	int ret;
+
+	if (length == 0 || (length == 1 && path[0] == DIR_SEPARATOR_CHAR))
+		return 0;
+
+	if (!(tmpPath = (char*)malloc(length+1)))
+	{
+		errno = ENOMEM;
+		return -1;
+	}
+	strcpy(tmpPath, path);
+	if (tmpPath[length-1] == DIR_SEPARATOR_CHAR)
+		tmpPath[length-1] = '\0';
+
+	for (tmpPtr = tmpPath; *tmpPtr; ++tmpPtr)
+	{
+		if (*tmpPtr == DIR_SEPARATOR_CHAR)
+		{
+			*tmpPtr = '\0';
+			if (mkdir(tmpPath, mode) == -1)
+			{
+				/* here mkdir will have already set errno */
+				free(tmpPath);
+				return -1;
+			}
+			*tmpPtr = DIR_SEPARATOR_CHAR;
+		}
+	}
+	ret = mkdir(tmpPath, mode);
+	free(tmpPath);
+	return ret;
 }
 
 const char * xdgDataHome(xdgHandle handle)
