@@ -43,9 +43,6 @@
 #ifndef XDG_BASEDIR_H
 #define XDG_BASEDIR_H
 
-#include <stdio.h>
-#include <sys/types.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -126,63 +123,6 @@ const char * const * xdgSearchableConfigDirectories(xdgHandle handle);
   * @param handle Handle to data cache, allocated with xdgAllocHandle().
   * @return a path as described by the standards. */
 const char * xdgCacheHome(xdgHandle handle);
-
-/*@}*/
-
-/** @name Higher-level XDG Base Directory Queries */
-/*@{*/
-
-/** Find all existing data files corresponding to relativePath.
-  * Consider as performing @code fopen(filename, "r") @endcode on every possible @c filename
-  * 	and returning the successful <tt>filename</tt>s.
-  * @param relativePath Path to scan for.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
-  * @return A sequence of null-terminated strings terminated by a double-null (empty string)
-  * 	and allocated using malloc(), e.g.: @code "/etc/share\0/home/jdoe/.local\0" @endcode
-  */
-const char * xdgDataFind(const char* relativePath, xdgHandle handle);
-
-/** Find all existing config files corresponding to relativePath.
-  * Consider as performing @code fopen(filename, "r") @endcode on every possible @c filename
-  * 	and returning the successful <tt>filename</tt>s.
-  * @param relativePath Path to scan for.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
-  * @return A sequence of null-terminated strings terminated by a double-null (empty string)
-  * 	and allocated using malloc(), e.g.: @code "/etc/xdg\0/home/jdoe/.config\0" @endcode
-  */
-const char * xdgConfigFind(const char* relativePath, xdgHandle handle);
-
-/** Open first possible data file corresponding to relativePath.
-  * Consider as performing @code fopen(filename, mode) @endcode on every possible @c filename
-  * 	and returning the first successful @c filename or @c NULL.
-  * @param relativePath Path to scan for.
-  * @param mode Mode with which to attempt to open files (see fopen modes).
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
-  * @return File pointer if successful else @c NULL. Client must use @c fclose to close file.
-  */
-FILE * xdgDataOpen(const char* relativePath, const char* mode, xdgHandle handle);
-
-/** Open first possible config file corresponding to relativePath.
-  * Consider as performing @code fopen(filename, mode) @endcode on every possible @c filename
-  * 	and returning the first successful @c filename or @c NULL.
-  * @param relativePath Path to scan for.
-  * @param mode Mode with which to attempt to open files (see fopen modes).
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
-  * @return File pointer if successful else @c NULL. Client must use @c fclose to close file.
-  */
-FILE * xdgConfigOpen(const char* relativePath, const char* mode, xdgHandle handle);
-
-/** Create path by recursively creating directories.
-  * This utility function is not part of the XDG specification, but
-  * nevertheless useful in context of directory manipulation.
-  * @param path The path to be created.
-  * @param mode The permissions to use for created directories. This parameter
-  * 	is modified by the process's umask. For details, see mkdir(2)'s mode
-  * 	parameter.
-  * @return Zero on success, -1 if an error occured (in which case errno will
-  * 	be set appropriately)
-  */
-int xdgMakePath(const char * path, mode_t mode);
 
 /*@}*/
 

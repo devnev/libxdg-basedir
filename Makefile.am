@@ -5,7 +5,7 @@ EXTRA_DIST =			\
 	doxygen.cfg			\
 	autogen.sh
 
-include_HEADERS = include/basedir.h
+include_HEADERS = include/basedir.h include/basedir_fs.h
 
 include $(top_srcdir)/aminclude.am
 

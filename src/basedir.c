@@ -81,6 +81,7 @@ static void xdgZeroMemory(void* p, size_t n)
 #endif
 
 #include <basedir.h>
+#include <basedir_fs.h>
 
 #ifndef MAX
 #define MAX(a, b) ((b) > (a) ? (b) : (a))
