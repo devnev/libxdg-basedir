@@ -26,6 +26,8 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset strcpy strncpy bcopy bzero getenv])
 
+CC_NOUNDEFINED
+
 # Generated files.
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
