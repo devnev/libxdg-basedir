@@ -54,75 +54,75 @@ extern "C" {
 /*@{*/
 
 /** Handle to XDG data cache.
-  * Handles are allocated with xdgAllocHandle() and
-  * freed with xdgFreeHandle(). */
+  * Handles are initialized with xdgInitHandle() and
+  * freed with xdgWipeHandle(). */
 typedef struct /*_xdgHandle*/ {
 	/** Reserved for internal use, do not modify. */
 	void *reserved;
-} *xdgHandle;
+} xdgHandle;
 
-/** Get a handle to an XDG data cache and initialize the cache.
-  * Use xdgFreeHandle() to free the handle.
+/** Initialize a handle to an XDG data cache and initialize the cache.
+  * Use xdgWipeHandle() to free the handle.
   * @return a handle if allocation was successful, else 0 */
-xdgHandle xdgAllocHandle();
+xdgHandle * xdgInitHandle(xdgHandle *handle);
 
 /** Free handle to XDG data cache.
   * Free handle allocated using xdgAllocHandle(). */
-void xdgFreeHandle(xdgHandle handle);
+void xdgWipeHandle(xdgHandle *handle);
 
 /** Update the data cache.
   * This should not be done frequently as it reallocates the cache.
   * Even if updating the cache fails the handle remains valid and can
   * be used to access XDG data as it was before xdgUpdateData() was called.
   * @return 0 if update failed, non-0 if successful.*/
-int xdgUpdateData(xdgHandle handle);
+int xdgUpdateData(xdgHandle *handle);
 
 /*@}*/
 /** @name Basic XDG Base Directory Queries */
 /*@{*/
 
 /** Base directory for user specific data files.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
-const char * xdgDataHome(xdgHandle handle);
+const char * xdgDataHome(xdgHandle *handle);
 
 /** Base directory for user specific configuration files.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
-const char * xdgConfigHome(xdgHandle handle);
+const char * xdgConfigHome(xdgHandle *handle);
 
 /** Preference-ordered set of base directories to search for data files
   * in addition to the $XDG_DATA_HOME base directory.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return A null-terminated list of directory strings. */
-const char * const * xdgDataDirectories(xdgHandle handle);
+const char * const * xdgDataDirectories(xdgHandle *handle);
 
 /** Preference-ordered set of base directories to search for data files
   * with $XDG_DATA_HOME prepended.
   * The base directory defined by $XDG_DATA_HOME is considered more
   * important than any of the base directories defined by $XDG_DATA_DIRS.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return A null-terminated list of directory strings. */
-const char * const * xdgSearchableDataDirectories(xdgHandle handle);
+const char * const * xdgSearchableDataDirectories(xdgHandle *handle);
 
 /** Preference-ordered set of base directories to search for configuration
   * files in addition to the $XDG_CONFIG_HOME base directory.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return A null-terminated list of directory strings. */
-const char * const * xdgConfigDirectories(xdgHandle handle);
+const char * const * xdgConfigDirectories(xdgHandle *handle);
 
 /** Preference-ordered set of base directories to search for configuration
   * files with $XDG_CONFIG_HOME prepended.
   * The base directory defined by $XDG_CONFIG_HOME is considered more
   * important than any of the base directories defined by $XDG_CONFIG_DIRS.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return A null-terminated list of directory strings. */
-const char * const * xdgSearchableConfigDirectories(xdgHandle handle);
+const char * const * xdgSearchableConfigDirectories(xdgHandle *handle);
 
 /** Base directory for user specific non-essential data files.
-  * @param handle Handle to data cache, allocated with xdgAllocHandle().
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
-const char * xdgCacheHome(xdgHandle handle);
+const char * xdgCacheHome(xdgHandle *handle);
 
 /*@}*/
 

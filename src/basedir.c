@@ -113,20 +113,17 @@ typedef struct _xdgCachedData
 } xdgCachedData;
 
 /** Get cache object associated with a handle */
-static xdgCachedData* xdgGetCache(xdgHandle handle)
+static xdgCachedData* xdgGetCache(xdgHandle *handle)
 {
 	return ((xdgCachedData*)(handle->reserved));
 }
 
-xdgHandle xdgAllocHandle()
+xdgHandle * xdgInitHandle(xdgHandle *handle)
 {
-	xdgHandle handle = (xdgHandle)malloc(sizeof(*handle));
 	if (!handle) return 0;
 	handle->reserved = 0; /* So xdgUpdateData() doesn't free it */
 	if (xdgUpdateData(handle))
 		return handle;
-	else
-		free(handle);
 	return 0;
 }
 
@@ -162,12 +159,11 @@ static void xdgFreeData(xdgCachedData *cache)
 	cache->searchableConfigDirectories = 0;
 }
 
-void xdgFreeHandle(xdgHandle handle)
+void xdgWipeHandle(xdgHandle *handle)
 {
 	xdgCachedData* cache = xdgGetCache(handle);
 	xdgFreeData(cache);
 	free(cache);
-	free(handle);
 }
 
 /** Get value for environment variable $name, defaulting to "defaultValue".
@@ -368,7 +364,7 @@ static int xdgUpdateDirectoryLists(xdgCachedData* cache)
 	return TRUE;
 }
 
-int xdgUpdateData(xdgHandle handle)
+int xdgUpdateData(xdgHandle *handle)
 {
 	xdgCachedData* cache = (xdgCachedData*)malloc(sizeof(xdgCachedData));
 	xdgCachedData* oldCache;
@@ -515,47 +511,47 @@ int xdgMakePath(const char * path, mode_t mode)
 	return ret;
 }
 
-const char * xdgDataHome(xdgHandle handle)
+const char * xdgDataHome(xdgHandle *handle)
 {
 	return xdgGetCache(handle)->dataHome;
 }
-const char * xdgConfigHome(xdgHandle handle)
+const char * xdgConfigHome(xdgHandle *handle)
 {
 	return xdgGetCache(handle)->configHome;
 }
-const char * const * xdgDataDirectories(xdgHandle handle)
+const char * const * xdgDataDirectories(xdgHandle *handle)
 {
 	return (const char * const *)&(xdgGetCache(handle)->searchableDataDirectories[1]);
 }
-const char * const * xdgSearchableDataDirectories(xdgHandle handle)
+const char * const * xdgSearchableDataDirectories(xdgHandle *handle)
 {
 	return (const char * const *)xdgGetCache(handle)->searchableDataDirectories;
 }
-const char * const * xdgConfigDirectories(xdgHandle handle)
+const char * const * xdgConfigDirectories(xdgHandle *handle)
 {
 	return (const char * const *)&(xdgGetCache(handle)->searchableConfigDirectories[1]);
 }
-const char * const * xdgSearchableConfigDirectories(xdgHandle handle)
+const char * const * xdgSearchableConfigDirectories(xdgHandle *handle)
 {
 	return (const char * const *)xdgGetCache(handle)->searchableConfigDirectories;
 }
-const char * xdgCacheHome(xdgHandle handle)
+const char * xdgCacheHome(xdgHandle *handle)
 {
 	return xdgGetCache(handle)->cacheHome;
 }
-char * xdgDataFind(const char * relativePath, xdgHandle handle)
+char * xdgDataFind(const char * relativePath, xdgHandle *handle)
 {
 	return xdgFindExisting(relativePath, xdgSearchableDataDirectories(handle));
 }
-char * xdgConfigFind(const char * relativePath, xdgHandle handle)
+char * xdgConfigFind(const char * relativePath, xdgHandle *handle)
 {
 	return xdgFindExisting(relativePath, xdgSearchableConfigDirectories(handle));
 }
-FILE * xdgDataOpen(const char * relativePath, const char * mode, xdgHandle handle)
+FILE * xdgDataOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
 	return xdgFileOpen(relativePath, mode, xdgSearchableDataDirectories(handle));
 }
-FILE * xdgConfigOpen(const char * relativePath, const char * mode, xdgHandle handle)
+FILE * xdgConfigOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
 	return xdgFileOpen(relativePath, mode, xdgSearchableConfigDirectories(handle));
 }
