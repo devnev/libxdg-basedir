@@ -525,19 +525,19 @@ const char * xdgConfigHome(xdgHandle handle)
 }
 const char * const * xdgDataDirectories(xdgHandle handle)
 {
-	return &(xdgGetCache(handle)->searchableDataDirectories[1]);
+	return (const char * const *)&(xdgGetCache(handle)->searchableDataDirectories[1]);
 }
 const char * const * xdgSearchableDataDirectories(xdgHandle handle)
 {
-	return xdgGetCache(handle)->searchableDataDirectories;
+	return (const char * const *)xdgGetCache(handle)->searchableDataDirectories;
 }
 const char * const * xdgConfigDirectories(xdgHandle handle)
 {
-	return &(xdgGetCache(handle)->searchableConfigDirectories[1]);
+	return (const char * const *)&(xdgGetCache(handle)->searchableConfigDirectories[1]);
 }
 const char * const * xdgSearchableConfigDirectories(xdgHandle handle)
 {
-	return xdgGetCache(handle)->searchableConfigDirectories;
+	return (const char * const *)xdgGetCache(handle)->searchableConfigDirectories;
 }
 const char * xdgCacheHome(xdgHandle handle)
 {
