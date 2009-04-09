@@ -43,28 +43,27 @@ int main(int argc, char* argv[])
 {
 	const char* result;
 	int ret = 0;
-	xdgHandle handle = xdgAllocHandle();
-	if (!handle) return 1;
-
+	xdgHandle handle;
+	if (!xdgInitHandle(&handle)) return 1;
 	if (argc == 2)
 	{
 		printf("xdgDataFind:\n");
-		printAndFreeStrings(xdgDataFind(argv[1], handle));
+		printAndFreeStrings(xdgDataFind(argv[1], &handle));
 		printf("xdgConfigFind:\n");
-		printAndFreeStrings(xdgConfigFind(argv[1], handle));
+		printAndFreeStrings(xdgConfigFind(argv[1], &handle));
 	}
 	else if (argc == 3)
 	{
 		if (strcmp(argv[1], "--data") == 0)
-			printAndFreeStrings(xdgDataFind(argv[2], handle));
+			printAndFreeStrings(xdgDataFind(argv[2], &handle));
 		else if (strcmp(argv[1], "--config") == 0)
-			printAndFreeStrings(xdgConfigFind(argv[2], handle));
+			printAndFreeStrings(xdgConfigFind(argv[2], &handle));
 		else
 			ret = 2;
 	}
 	else
 		ret = 2;
 
-	xdgFreeHandle(handle);
+	xdgWipeHandle(&handle);
 	return ret;
 }
