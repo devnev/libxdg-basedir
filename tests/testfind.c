@@ -64,6 +64,6 @@ int main(int argc, char* argv[])
 	else
 		ret = 2;
 
-	xdgWipeHandle(&handle);
+	xdgDestroyHandle(&handle);
 	return ret;
 }

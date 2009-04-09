@@ -159,7 +159,7 @@ static void xdgFreeData(xdgCachedData *cache)
 	cache->searchableConfigDirectories = 0;
 }
 
-void xdgWipeHandle(xdgHandle *handle)
+void xdgDestroyHandle(xdgHandle *handle)
 {
 	xdgCachedData* cache = xdgGetCache(handle);
 	xdgFreeData(cache);
