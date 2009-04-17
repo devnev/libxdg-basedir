@@ -55,20 +55,20 @@ extern "C" {
 
 /** Handle to XDG data cache.
   * Handles are initialized with xdgInitHandle() and
-  * freed with xdgDestroyHandle(). */
+  * freed with xdgWipeHandle(). */
 typedef struct /*_xdgHandle*/ {
 	/** Reserved for internal use, do not modify. */
 	void *reserved;
 } xdgHandle;
 
 /** Initialize a handle to an XDG data cache and initialize the cache.
-  * Use xdgDestroyHandle() to free the handle.
+  * Use xdgWipeHandle() to free the handle.
   * @return a handle if allocation was successful, else 0 */
 xdgHandle * xdgInitHandle(xdgHandle *handle);
 
 /** Free handle to XDG data cache.
   * Free handle allocated using xdgAllocHandle(). */
-void xdgDestroyHandle(xdgHandle *handle);
+void xdgWipeHandle(xdgHandle *handle);
 
 /** Update the data cache.
   * This should not be done frequently as it reallocates the cache.

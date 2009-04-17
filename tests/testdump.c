@@ -45,6 +45,6 @@ main(int argc, char* argv[])
 	for (item = xdgSearchableConfigDirectories(&handle); *item; item++)
 		printf("%s%c", *item, (item[1] ? ':' : '\n'));
 	printf("${XDG_CACHE_HOME:-$HOME/.cache}=%s\n", xdgCacheHome(&handle));
-	xdgDestroyHandle(&handle);
+	xdgWipeHandle(&handle);
 	return 0;
 }
