@@ -63,11 +63,11 @@ typedef struct /*_xdgHandle*/ {
 
 /** Initialize a handle to an XDG data cache and initialize the cache.
   * Use xdgWipeHandle() to free the handle.
-  * @return a handle if allocation was successful, else 0 */
+  * @return a pointer to the handle if initialization was successful, else 0 */
 xdgHandle * xdgInitHandle(xdgHandle *handle);
 
-/** Free handle to XDG data cache.
-  * Free handle allocated using xdgAllocHandle(). */
+/** Wipe handle of XDG data cache.
+  * Wipe handle initialized using xdgInitHandle(). */
 void xdgWipeHandle(xdgHandle *handle);
 
 /** Update the data cache.
