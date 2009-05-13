@@ -500,9 +500,11 @@ int xdgMakePath(const char * path, mode_t mode)
 			*tmpPtr = '\0';
 			if (mkdir(tmpPath, mode) == -1)
 			{
-				/* here mkdir will have already set errno */
-				free(tmpPath);
-				return -1;
+				if (errno != EEXIST)
+				{
+					free(tmpPath);
+					return -1;
+				}
 			}
 			*tmpPtr = DIR_SEPARATOR_CHAR;
 		}
