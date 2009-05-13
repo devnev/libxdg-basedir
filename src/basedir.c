@@ -492,7 +492,8 @@ int xdgMakePath(const char * path, mode_t mode)
 	if (tmpPath[length-1] == DIR_SEPARATOR_CHAR)
 		tmpPath[length-1] = '\0';
 
-	for (tmpPtr = tmpPath; *tmpPtr; ++tmpPtr)
+	/* skip tmpPath[0] since if it's a seperator we have an absolute path */
+	for (tmpPtr = tmpPath+1; *tmpPtr; ++tmpPtr)
 	{
 		if (*tmpPtr == DIR_SEPARATOR_CHAR)
 		{
