@@ -153,6 +153,11 @@ static void xdgFreeData(xdgCachedData *cache)
 			free(cache->configHome);
 		cache->configHome = 0;
 	}
+	if (cache->cacheHome)
+	{
+		free(cache->cacheHome);
+		cache->cacheHome = 0;
+	}
 	xdgFreeStringList(cache->searchableDataDirectories);
 	cache->searchableDataDirectories = 0;
 	xdgFreeStringList(cache->searchableConfigDirectories);
