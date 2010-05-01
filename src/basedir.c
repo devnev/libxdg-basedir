@@ -232,9 +232,9 @@ static char** xdgSplitPath(const char* string)
 /** Get $PATH-style environment variable as list of strings.
  * If $name is unset or empty, use default strings specified by variable arguments.
  * @param name Name of environment variable
- * @param strings NULL-terminated list of strings to be copied and used as defaults
+ * @param defaults NULL-terminated list of strings to be copied and used as defaults
  */
-static char** xdgGetPathListEnv(const char* name, const char ** strings)
+static char** xdgGetPathListEnv(const char* name, const char ** defaults)
 {
 	const char* env;
 	char* item;
@@ -252,17 +252,17 @@ static char** xdgGetPathListEnv(const char* name, const char ** strings)
 	}
 	else
 	{
-		if (!strings) return NULL;
-		for (size = 0; strings[size]; ++size) ; ++size;
+		if (!defaults) return NULL;
+		for (size = 0; defaults[size]; ++size) ; ++size;
 		if (!(itemlist = (char**)malloc(sizeof(char*)*size))) return NULL;
 		xdgZeroMemory(itemlist, sizeof(char*)*(size));
 
 		/* Copy defaults into itemlist. */
 		/* Why all this funky stuff? So the result can be handled uniformly by xdgFreeStringList. */
-		for (i = 0; strings[i]; ++i)
+		for (i = 0; defaults[i]; ++i)
 		{
-			if (!(item = (char*)malloc(strlen(strings[i])+1))) { xdgFreeStringList(itemlist); return NULL; }
-			strcpy(item, strings[i]);
+			if (!(item = (char*)malloc(strlen(defaults[i])+1))) { xdgFreeStringList(itemlist); return NULL; }
+			strcpy(item, defaults[i]);
 			itemlist[i] = item;
 		}
 	}
