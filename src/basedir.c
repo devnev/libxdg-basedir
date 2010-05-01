@@ -143,13 +143,13 @@ static void xdgFreeData(xdgCachedData *cache)
 	if (cache->dataHome);
 	{
 		/* the first element of the directory lists is usually the home directory */
-		if (cache->searchableDataDirectories[0] != cache->dataHome)
+		if (cache->searchableDataDirectories && cache->searchableDataDirectories[0] != cache->dataHome)
 			free(cache->dataHome);
 		cache->dataHome = 0;
 	}
 	if (cache->configHome);
 	{
-		if (cache->searchableConfigDirectories[0] != cache->configHome)
+		if (cache->searchableConfigDirectories && cache->searchableConfigDirectories[0] != cache->configHome)
 			free(cache->configHome);
 		cache->configHome = 0;
 	}
