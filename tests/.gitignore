@@ -5,3 +5,4 @@ testfind
 testdump.o
 testfind.o
 .deps
+.libs
