@@ -351,40 +351,52 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 	return cache->dataHome && cache->configHome && cache->cacheHome;
 }
 
+/** Get directory lists with initial home directory.
+ * @param envname Environment variable with colon-seperated directories.
+ * @param homedir Home directory for this directory list. This parameter should
+ *        be allocated on the heap. The returned list will start with this
+ *        path, and should be considered as owning the memory.
+ * @param defaults Default directories if environment variable is not set.
+ * @return An array of strings. Both the array and its contents are allocated
+ *         with malloc(). The function xdgFreeStringList is provided for
+ *         conveniantly free()-ing the list and all its elements.
+ */
+static char** xdgGetDirectoryLists(const char *envname, char *homedir, const char **defaults)
+{
+	char **envlist;
+	char **dirlist;
+	unsigned int size;
+
+	if (!(envlist = xdgGetPathListEnv(envname, defaults)))
+		return NULL;
+
+	for (size = 0; envlist[size]; size++) ; /* Get list size */
+	if (!(dirlist = (char**)malloc(sizeof(char*)*(size+2))))
+	{
+		xdgFreeStringList(envlist);
+		return NULL;
+	}
+	/* "home" directory has highest priority according to spec */
+	dirlist[0] = homedir;
+	memcpy(dirlist+1, envlist, sizeof(char*)*(size+1));
+	/* only free the envlist since its elements are now referenced by dirlist */
+	free(envlist);
+
+	return dirlist;
+}
+
 /** Update all *Directories variables of cache.
  * This includes xdgCachedData::searchableDataDirectories and xdgCachedData::searchableConfigDirectories.
  * @param cache Data cache to be updated.
  */
 static int xdgUpdateDirectoryLists(xdgCachedData* cache)
 {
-	char** itemlist;
-	int size;
-
-	itemlist = xdgGetPathListEnv("XDG_DATA_DIRS", DefaultDataDirectoriesList);
-
-	if (!itemlist) return FALSE;
-	for (size = 0; itemlist[size]; size++) ; /* Get list size */
-	if (!(cache->searchableDataDirectories = (char**)malloc(sizeof(char*)*(size+2))))
-	{
-		xdgFreeStringList(itemlist);
+	if (!(cache->searchableDataDirectories = xdgGetDirectoryLists(
+			"XDG_DATA_DIRS", cache->dataHome, DefaultDataDirectoriesList)))
 		return FALSE;
-	}
-	/* "home" directory has highest priority according to spec */
-	cache->searchableDataDirectories[0] = cache->dataHome;
-	memcpy(&(cache->searchableDataDirectories[1]), itemlist, sizeof(char*)*(size+1));
-	free(itemlist);
-	
-	itemlist = xdgGetPathListEnv("XDG_CONFIG_DIRS", DefaultConfigDirectoriesList);
-	if (!itemlist) return FALSE;
-	for (size = 0; itemlist[size]; size++) ; /* Get list size */
-	if (!(cache->searchableConfigDirectories = (char**)malloc(sizeof(char*)*(size+2))))
-	{
-		xdgFreeStringList(itemlist);
+	if (!(cache->searchableConfigDirectories = xdgGetDirectoryLists(
+			"XDG_CONFIG_DIRS", cache->configHome, DefaultConfigDirectoriesList)))
 		return FALSE;
-	}
-	cache->searchableConfigDirectories[0] = cache->configHome;
-	memcpy(&(cache->searchableConfigDirectories[1]), itemlist, sizeof(char*)*(size+1));
-	free(itemlist);
 
 	return TRUE;
 }
