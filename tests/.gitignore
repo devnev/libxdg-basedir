@@ -2,7 +2,9 @@ Makefile
 Makefile.in
 testdump
 testfind
+testquery
 testdump.o
 testfind.o
+testquery.o
 .deps
 .libs
