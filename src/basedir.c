@@ -171,30 +171,6 @@ void xdgWipeHandle(xdgHandle *handle)
 	free(cache);
 }
 
-/** Get value for environment variable $name, defaulting to "defaultValue".
- *	@param name Name of environment variable.
- *	@param defaultValue Value to assume for environment variable if it is
- *		unset or empty.
- */
-static char* xdgGetEnv(const char* name, const char* defaultValue)
-{
-	const char* env;
-	char* value;
-
-	env = getenv(name);
-	if (env && env[0])
-	{
-		if (!(value = (char*)malloc(strlen(env)+1))) return 0;
-		strcpy(value, env);
-	}
-	else
-	{
-		if (!(value = (char*)malloc(strlen(defaultValue)+1))) return 0;
-		strcpy(value, defaultValue);
-	}
-	return value;
-}
-
 /** Split string at ':', return null-terminated list of resulting strings.
  * @param string String to be split
  */
@@ -293,10 +269,30 @@ static char** xdgGetPathListEnv(const char* name, const char ** strings)
 	return itemlist;
 }
 
+/** Get value of an environment variable.
+ * Sets @c errno to @c EINVAL if variable is not set or empty.
+ * @param name Name of environment variable.
+ * @return The environment variable or NULL if an error occurs.
+ */
+static char* xdgGetEnv(const char *name)
+{
+	char *env = getenv(name);
+	if (env && env[0])
+		return env;
+	/* What errno signifies missing env var? */
+	errno = EINVAL;
+	return NULL;
+}
+
+/** Duplicate an environment variable.
+ * Sets @c errno to @c ENOMEM if unable to allocate duplicate string.
+ * Sets @c errno to @c EINVAL if variable is not set or empty.
+ * @return The duplicated string or NULL if an error occurs.
+ */
 static char* xdgEnvDup(const char *name)
 {
 	const char *env;
-	if ((env = getenv(name)) && env[0])
+	if ((env = xdgGetEnv(name)))
 		return strdup(env);
 	else
 		return NULL;
@@ -319,16 +315,12 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 	if (!(cache->dataHome = xdgEnvDup("XDG_DATA_HOME")) && errno == ENOMEM) return FALSE;
 	if (!(cache->configHome = xdgEnvDup("XDG_CONFIG_HOME")) && errno == ENOMEM) return FALSE;
 	if (!(cache->cacheHome = xdgEnvDup("XDG_CACHE_HOME")) && errno == ENOMEM) return FALSE;
+	errno = 0;
 
 	if (cache->dataHome && cache->configHome && cache->cacheHome) return TRUE;
 
-	homeenv = getenv("HOME");
-	if (!homeenv || !homeenv[0])
-	{
-		/* What errno signifies missing env var? */
-		errno = EINVAL;
+	if (!(homeenv = xdgGetEnv("HOME")))
 		return FALSE;
-	}
 
 	/* Allocate maximum needed for any of the 3 default values */
 	if (!(value = (char*)malloc((homelen = strlen(homeenv))+extralen))) return FALSE;
