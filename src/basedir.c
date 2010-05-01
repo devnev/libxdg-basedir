@@ -293,42 +293,70 @@ static char** xdgGetPathListEnv(const char* name, const char ** strings)
 	return itemlist;
 }
 
+static char* xdgEnvDup(const char *name)
+{
+	const char *env;
+	if ((env = getenv(name)) && env[0])
+		return strdup(env);
+	else
+		return NULL;
+}
+
 /** Update all *Home variables of cache.
  * This includes xdgCachedData::dataHome, xdgCachedData::configHome and xdgCachedData::cacheHome.
  * @param cache Data cache to be updated
  */
 static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 {
-	const char* env;
-	char* home, *defVal;
+	const char* homeenv;
+	char* home, *value;
+	unsigned int homelen;
+	static const unsigned int extralen =
+		MAX(MAX(sizeof(DefaultRelativeDataHome),
+					sizeof(DefaultRelativeConfigHome)),
+				sizeof(DefaultRelativeCacheHome));
 
-	env = getenv("HOME");
-	if (!env || !env[0])
+	if (!(cache->dataHome = xdgEnvDup("XDG_DATA_HOME")) && errno == ENOMEM) return FALSE;
+	if (!(cache->configHome = xdgEnvDup("XDG_CONFIG_HOME")) && errno == ENOMEM) return FALSE;
+	if (!(cache->cacheHome = xdgEnvDup("XDG_CACHE_HOME")) && errno == ENOMEM) return FALSE;
+
+	if (cache->dataHome && cache->configHome && cache->cacheHome) return TRUE;
+
+	homeenv = getenv("HOME");
+	if (!homeenv || !homeenv[0])
+	{
+		/* What errno signifies missing env var? */
+		errno = EINVAL;
 		return FALSE;
-	if (!(home = (char*)malloc(strlen(env)+1))) return FALSE;
-	strcpy(home, env);
+	}
 
 	/* Allocate maximum needed for any of the 3 default values */
-	defVal = (char*)malloc(strlen(home)+
-		MAX(MAX(sizeof(DefaultRelativeDataHome), sizeof(DefaultRelativeConfigHome)), sizeof(DefaultRelativeCacheHome)));
-	if (!defVal) return FALSE;
+	if (!(value = (char*)malloc((homelen = strlen(homeenv))+extralen))) return FALSE;
+	memcpy(value, homeenv, homelen+1);
 
-	strcpy(defVal, home);
-	strcat(defVal, DefaultRelativeDataHome);
-	if (!(cache->dataHome = xdgGetEnv("XDG_DATA_HOME", defVal))) return FALSE;
+	if (!cache->dataHome)
+	{
+		memcpy(value+homelen, DefaultRelativeDataHome, sizeof(DefaultRelativeDataHome));
+		cache->dataHome = strdup(value);
+	}
 
-	defVal[strlen(home)] = 0;
-	strcat(defVal, DefaultRelativeConfigHome);
-	if (!(cache->configHome = xdgGetEnv("XDG_CONFIG_HOME", defVal))) return FALSE;
+	if (!cache->configHome)
+	{
+		memcpy(value+homelen, DefaultRelativeConfigHome, sizeof(DefaultRelativeConfigHome));
+		cache->configHome = strdup(value);
+	}
 
-	defVal[strlen(home)] = 0;
-	strcat(defVal, DefaultRelativeCacheHome);
-	if (!(cache->cacheHome = xdgGetEnv("XDG_CACHE_HOME", defVal))) return FALSE;
+	if (!cache->cacheHome)
+	{
+		memcpy(value+homelen, DefaultRelativeCacheHome, sizeof(DefaultRelativeCacheHome));
+		cache->cacheHome = strdup(value);
+	}
 
-	free(defVal);
-	free(home);
+	free(value);
 
-	return TRUE;
+	/* free does not change errno, and the prev call *must* have been a strdup,
+	 * so errno is already set. */
+	return cache->dataHome && cache->configHome && cache->cacheHome;
 }
 
 /** Update all *Directories variables of cache.
