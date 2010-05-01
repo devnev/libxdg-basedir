@@ -539,13 +539,44 @@ int xdgMakePath(const char * path, mode_t mode)
 	return ret;
 }
 
+/** Get a home directory from the environment or a fallback relative to @c \$HOME.
+ * Sets @c errno to @c ENOMEM if unable to allocate duplicate string.
+ * Sets @c errno to @c EINVAL if variable is not set or empty.
+ * @param envname Name of environment variable.
+ * @param relativefallback Path starting with "/" and relative to @c \$HOME to use as fallback.
+ * @param fallbacklength @c strlen(relativefallback).
+ * @return The home directory path or @c NULL of an error occurs.
+ */
+static char * xdgGetRelativeHome(const char *envname, const char *relativefallback, unsigned int fallbacklength)
+{
+	char *relhome;
+	if (!(relhome = xdgEnvDup(envname)) && errno != ENOMEM)
+	{
+		errno = 0;
+		const char *home;
+		unsigned int homelen;
+		if (!(home = xdgGetEnv("HOME")))
+			return NULL;
+		if (!(relhome = (char*)malloc((homelen = strlen(home))+fallbacklength))) return NULL;
+		memcpy(relhome, home, homelen);
+		memcpy(relhome+homelen, relativefallback, fallbacklength+1);
+	}
+	return relhome;
+}
+
 const char * xdgDataHome(xdgHandle *handle)
 {
-	return xdgGetCache(handle)->dataHome;
+	if (handle)
+		return xdgGetCache(handle)->dataHome;
+	else
+		return xdgGetRelativeHome("XDG_DATA_HOME", DefaultRelativeDataHome, sizeof(DefaultRelativeDataHome)-1);
 }
 const char * xdgConfigHome(xdgHandle *handle)
 {
-	return xdgGetCache(handle)->configHome;
+	if (handle)
+		return xdgGetCache(handle)->configHome;
+	else
+		return xdgGetRelativeHome("XDG_CONFIG_HOME", DefaultRelativeConfigHome, sizeof(DefaultRelativeConfigHome)-1);
 }
 const char * const * xdgDataDirectories(xdgHandle *handle)
 {
@@ -565,7 +596,10 @@ const char * const * xdgSearchableConfigDirectories(xdgHandle *handle)
 }
 const char * xdgCacheHome(xdgHandle *handle)
 {
-	return xdgGetCache(handle)->cacheHome;
+	if (handle)
+		return xdgGetCache(handle)->cacheHome;
+	else
+		return xdgGetRelativeHome("XDG_CACHE_HOME", DefaultRelativeCacheHome, sizeof(DefaultRelativeCacheHome)-1);
 }
 char * xdgDataFind(const char * relativePath, xdgHandle *handle)
 {
