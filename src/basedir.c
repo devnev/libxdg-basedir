@@ -353,9 +353,10 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 
 /** Get directory lists with initial home directory.
  * @param envname Environment variable with colon-seperated directories.
- * @param homedir Home directory for this directory list. This parameter should
- *        be allocated on the heap. The returned list will start with this
- *        path, and should be considered as owning the memory.
+ * @param homedir Home directory for this directory list or NULL. This
+ *                parameter should be allocated on the heap. The returned list
+ *                will start with this path, and should be considered as owning
+ *                the memory.
  * @param defaults Default directories if environment variable is not set.
  * @return An array of strings. Both the array and its contents are allocated
  *         with malloc(). The function xdgFreeStringList is provided for
@@ -371,14 +372,15 @@ static char** xdgGetDirectoryLists(const char *envname, char *homedir, const cha
 		return NULL;
 
 	for (size = 0; envlist[size]; size++) ; /* Get list size */
-	if (!(dirlist = (char**)malloc(sizeof(char*)*(size+2))))
+	if (!(dirlist = (char**)malloc(sizeof(char*)*(size+1+!!homedir))))
 	{
 		xdgFreeStringList(envlist);
 		return NULL;
 	}
 	/* "home" directory has highest priority according to spec */
-	dirlist[0] = homedir;
-	memcpy(dirlist+1, envlist, sizeof(char*)*(size+1));
+	if (homedir)
+		dirlist[0] = homedir;
+	memcpy(dirlist+!!homedir, envlist, sizeof(char*)*(size+1));
 	/* only free the envlist since its elements are now referenced by dirlist */
 	free(envlist);
 
@@ -592,19 +594,43 @@ const char * xdgConfigHome(xdgHandle *handle)
 }
 const char * const * xdgDataDirectories(xdgHandle *handle)
 {
-	return (const char * const *)&(xdgGetCache(handle)->searchableDataDirectories[1]);
+	if (handle)
+		return (const char * const *)&(xdgGetCache(handle)->searchableDataDirectories[1]);
+	else
+		return (const char * const *)xdgGetDirectoryLists("XDG_DATA_DIRS", NULL, DefaultDataDirectoriesList);
 }
 const char * const * xdgSearchableDataDirectories(xdgHandle *handle)
 {
-	return (const char * const *)xdgGetCache(handle)->searchableDataDirectories;
+	if (handle)
+		return (const char * const *)xdgGetCache(handle)->searchableDataDirectories;
+	else
+	{
+		char *datahome = (char*)xdgDataHome(NULL);
+		char **datadirs = 0;
+		if (datahome && !(datadirs = xdgGetDirectoryLists("XDG_DATA_DIRS", datahome, DefaultDataDirectoriesList)))
+			free(datahome);
+		return (const char * const *)datadirs;
+	}
 }
 const char * const * xdgConfigDirectories(xdgHandle *handle)
 {
-	return (const char * const *)&(xdgGetCache(handle)->searchableConfigDirectories[1]);
+	if (handle)
+		return (const char * const *)&(xdgGetCache(handle)->searchableConfigDirectories[1]);
+	else
+		return (const char * const *)xdgGetDirectoryLists("XDG_CONFIG_DIRS", NULL, DefaultConfigDirectoriesList);
 }
 const char * const * xdgSearchableConfigDirectories(xdgHandle *handle)
 {
-	return (const char * const *)xdgGetCache(handle)->searchableConfigDirectories;
+	if (handle)
+		return (const char * const *)xdgGetCache(handle)->searchableConfigDirectories;
+	else
+	{
+		char *confighome = (char*)xdgConfigHome(NULL);
+		char **configdirs = 0;
+		if (confighome && !(configdirs = xdgGetDirectoryLists("XDG_CONFIG_DIRS", confighome, DefaultConfigDirectoriesList)))
+			free(confighome);
+		return (const char * const *)configdirs;
+	}
 }
 const char * xdgCacheHome(xdgHandle *handle)
 {
@@ -615,18 +641,26 @@ const char * xdgCacheHome(xdgHandle *handle)
 }
 char * xdgDataFind(const char * relativePath, xdgHandle *handle)
 {
-	return xdgFindExisting(relativePath, xdgSearchableDataDirectories(handle));
+	const char * const * dirs = xdgSearchableDataDirectories(handle);
+	return xdgFindExisting(relativePath, dirs);
+	if (!handle) xdgFreeStringList((char**)dirs);
 }
 char * xdgConfigFind(const char * relativePath, xdgHandle *handle)
 {
-	return xdgFindExisting(relativePath, xdgSearchableConfigDirectories(handle));
+	const char * const * dirs = xdgSearchableConfigDirectories(handle);
+	return xdgFindExisting(relativePath, dirs);
+	if (!handle) xdgFreeStringList((char**)dirs);
 }
 FILE * xdgDataOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
-	return xdgFileOpen(relativePath, mode, xdgSearchableDataDirectories(handle));
+	const char * const * dirs = xdgSearchableDataDirectories(handle);
+	return xdgFileOpen(relativePath, mode, dirs);
+	if (!handle) xdgFreeStringList((char**)dirs);
 }
 FILE * xdgConfigOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
-	return xdgFileOpen(relativePath, mode, xdgSearchableConfigDirectories(handle));
+	const char * const * dirs = xdgSearchableConfigDirectories(handle);
+	return xdgFileOpen(relativePath, mode, dirs);
+	if (!handle) xdgFreeStringList((char**)dirs);
 }
 
