@@ -17,14 +17,15 @@ DX_PS_FEATURE(OFF)
 DX_INIT_DOXYGEN([libxdg-basedir], [doxygen.cfg], doc)
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h string.h errno.h sys/types.h])
+AC_CHECK_HEADERS([stdlib.h string.h strings.h memory.h errno.h sys/stat.h])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
+AC_TYPE_MODE_T
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memset strcpy strncpy bcopy bzero getenv])
+AC_CHECK_FUNCS([memset strcpy strncpy bcopy bzero getenv mkdir strdup])
 
 CC_NOUNDEFINED
 

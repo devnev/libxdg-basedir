@@ -59,7 +59,7 @@
 #elif HAVE_BZERO
 #  define xdgZeroMemory(p, n) bzero(p, n)
 #else
-static void xdgZeroMemory(void* p, size_t n)
+static void xdgZeroMemory(void* p, int n)
 {
 	while (n > 0) { ((char*)p)[n] = 0; ++n; }
 }
