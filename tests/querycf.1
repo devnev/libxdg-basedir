@@ -1,0 +1,12 @@
+#!/bin/sh
+
+harness="`dirname "$0"`/query-harness.sh"
+td="`dirname "$0"`"
+
+export HOME=/home/test
+export XDG_CONFIG_DIRS="$td"
+
+arguments='config find querycf.1'
+expected="$td/querycf.1"
+
+. "$harness"

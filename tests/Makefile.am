@@ -9,6 +9,8 @@ QUERYTESTS = \
 	querycd.3 \
 	querycd.4 \
 	querycd.5 \
+	querycf.1 \
+	querycf.2 \
 	querycs.1 \
 	querycs.2 \
 	querycs.3 \
@@ -19,6 +21,8 @@ QUERYTESTS = \
 	querydd.3 \
 	querydd.4 \
 	querydd.5 \
+	querydf.1 \
+	querydf.2 \
 	querydh.1 \
 	querydh.2 \
 	querydh.3 \

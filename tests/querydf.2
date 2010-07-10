@@ -1,0 +1,14 @@
+#!/bin/sh
+
+harness="`dirname "$0"`/query-harness.sh"
+wd="`pwd`"
+td="`dirname "$0"`"
+
+export HOME=/home/test
+export XDG_DATA_DIRS="$wd/$td"
+
+basename="`basename "$0"`"
+arguments="data find $basename"
+expected="$wd/$td/$basename"
+
+. "$harness"
