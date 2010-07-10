@@ -28,13 +28,13 @@
 #include <basedir.h>
 #include <basedir_fs.h>
 
-printAndFreeString(const char *string)
+void printAndFreeString(const char *string)
 {
 	printf("%s\n", string);
 	free((char*)string);
 }
 
-printAndFreeStringList(const char * const *strings)
+void printAndFreeStringList(const char * const *strings)
 {
 	const char * const *item;
 	for (item = strings; *item; ++item)

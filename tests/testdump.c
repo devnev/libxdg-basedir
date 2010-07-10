@@ -25,7 +25,7 @@
 #include <basedir.h>
 #include <stdio.h>
 
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	const char * const * item;
 	xdgHandle handle;

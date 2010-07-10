@@ -43,6 +43,7 @@
 #endif
 
 #include <errno.h>
+#include <sys/stat.h>
 
 #ifdef FALSE
 #undef FALSE
@@ -304,8 +305,8 @@ static char* xdgEnvDup(const char *name)
  */
 static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 {
-	const char* homeenv;
-	char* home, *value;
+	const char *homeenv;
+	char *value;
 	unsigned int homelen;
 	static const unsigned int extralen =
 		MAX(MAX(sizeof(DefaultRelativeDataHome),
