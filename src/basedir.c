@@ -642,25 +642,29 @@ const char * xdgCacheHome(xdgHandle *handle)
 char * xdgDataFind(const char * relativePath, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableDataDirectories(handle);
-	return xdgFindExisting(relativePath, dirs);
+	char * result = xdgFindExisting(relativePath, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 char * xdgConfigFind(const char * relativePath, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableConfigDirectories(handle);
-	return xdgFindExisting(relativePath, dirs);
+	char * result = xdgFindExisting(relativePath, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 FILE * xdgDataOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableDataDirectories(handle);
-	return xdgFileOpen(relativePath, mode, dirs);
+	FILE * result = xdgFileOpen(relativePath, mode, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 FILE * xdgConfigOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableConfigDirectories(handle);
-	return xdgFileOpen(relativePath, mode, dirs);
+	FILE * result = xdgFileOpen(relativePath, mode, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 
