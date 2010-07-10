@@ -1,4 +1,4 @@
-AM_CFLAGS = -I$(top_srcdir)/include
+AM_CFLAGS = -I$(top_srcdir)/include -Wall
 AUTOMAKE_OPTIONS = color-tests
 
 check_PROGRAMS = testdump testfind testquery
