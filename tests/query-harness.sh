@@ -7,12 +7,18 @@ if [ -z "$arguments" ]; then
 	echo "invalid test case, missing \$arguments variable" >&2
 fi
 
-
-output="`./testquery $arguments`"
-test x"$expected" = x"$output"
+testquery="`dirname "$0"`/testquery"
+if [ -n "$USE_VALGRIND" ] && (type valgrind 1>/dev/null)
+then
+	output="`valgrind -q --error-exitcode=1 "$testquery" $arguments`"
+else
+	output="`"$testquery" $arguments`"
+fi
+runresult=$?
+test x"$expected" = x"$output" -a x"$runresult" = "x0"
 result=$?
 if [ $# -gt 0 ] && [ x"$1" = x"-d" ]; then
-	echo "for $arguments"
+	echo "for $arguments (exit $runresult)"
 	echo "expected:"
 	echo "$expected"
 	echo "got:"
