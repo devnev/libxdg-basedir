@@ -41,7 +41,6 @@ void printAndFreeStrings(char * strings)
 
 int main(int argc, char* argv[])
 {
-	const char* result;
 	int ret = 0;
 	xdgHandle handle;
 	if (!xdgInitHandle(&handle)) return 1;

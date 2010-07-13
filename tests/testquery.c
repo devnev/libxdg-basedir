@@ -26,14 +26,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <basedir.h>
+#include <basedir_fs.h>
 
-printAndFreeString(const char *string)
+void printAndFreeString(const char *string)
 {
 	printf("%s\n", string);
 	free((char*)string);
 }
 
-printAndFreeStringList(const char * const *strings)
+void printAndFreeStringList(const char * const *strings)
 {
 	const char * const *item;
 	for (item = strings; *item; ++item)
@@ -58,6 +59,8 @@ int main(int argc, char *argv[])
 			printAndFreeStringList(xdgDataDirectories(NULL));
 		else if (strcmp(querytype, "search") == 0)
 			printAndFreeStringList(xdgSearchableDataDirectories(NULL));
+		else if (strcmp(querytype, "find") == 0 && argc == 4)
+			printAndFreeString(xdgDataFind(argv[3], NULL));
 		else
 			return 1;
 	}
@@ -69,6 +72,8 @@ int main(int argc, char *argv[])
 			printAndFreeStringList(xdgConfigDirectories(NULL));
 		else if (strcmp(querytype, "search") == 0)
 			printAndFreeStringList(xdgSearchableConfigDirectories(NULL));
+		else if (strcmp(querytype, "find") == 0 && argc == 4)
+			printAndFreeString(xdgConfigFind(argv[3], NULL));
 		else
 			return 1;
 	}

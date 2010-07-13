@@ -43,6 +43,7 @@
 #endif
 
 #include <errno.h>
+#include <sys/stat.h>
 
 #ifdef FALSE
 #undef FALSE
@@ -58,7 +59,7 @@
 #elif HAVE_BZERO
 #  define xdgZeroMemory(p, n) bzero(p, n)
 #else
-static void xdgZeroMemory(void* p, size_t n)
+static void xdgZeroMemory(void* p, int n)
 {
 	while (n > 0) { ((char*)p)[n] = 0; ++n; }
 }
@@ -304,8 +305,8 @@ static char* xdgEnvDup(const char *name)
  */
 static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 {
-	const char* homeenv;
-	char* home, *value;
+	const char *homeenv;
+	char *value;
 	unsigned int homelen;
 	static const unsigned int extralen =
 		MAX(MAX(sizeof(DefaultRelativeDataHome),
@@ -642,25 +643,29 @@ const char * xdgCacheHome(xdgHandle *handle)
 char * xdgDataFind(const char * relativePath, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableDataDirectories(handle);
-	return xdgFindExisting(relativePath, dirs);
+	char * result = xdgFindExisting(relativePath, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 char * xdgConfigFind(const char * relativePath, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableConfigDirectories(handle);
-	return xdgFindExisting(relativePath, dirs);
+	char * result = xdgFindExisting(relativePath, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 FILE * xdgDataOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableDataDirectories(handle);
-	return xdgFileOpen(relativePath, mode, dirs);
+	FILE * result = xdgFileOpen(relativePath, mode, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 FILE * xdgConfigOpen(const char * relativePath, const char * mode, xdgHandle *handle)
 {
 	const char * const * dirs = xdgSearchableConfigDirectories(handle);
-	return xdgFileOpen(relativePath, mode, dirs);
+	FILE * result = xdgFileOpen(relativePath, mode, dirs);
 	if (!handle) xdgFreeStringList((char**)dirs);
+	return result;
 }
 
