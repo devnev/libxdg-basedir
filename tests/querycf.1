@@ -1,7 +1,7 @@
 #!/bin/sh
 
-harness="`dirname "$0"`/query-harness.sh"
-td="`dirname "$0"`"
+harness="${top_srcdir}/tests/query-harness.sh"
+td="${top_srcdir}/tests"
 
 export HOME=/home/test
 export XDG_CONFIG_DIRS="$td"

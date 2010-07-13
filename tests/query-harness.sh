@@ -7,7 +7,7 @@ if [ -z "$arguments" ]; then
 	echo "invalid test case, missing \$arguments variable" >&2
 fi
 
-testquery="`dirname "$0"`/testquery"
+testquery="${top_builddir}/tests/testquery"
 if [ -n "$USE_VALGRIND" ] && (type valgrind 1>/dev/null)
 then
 	output="`valgrind -q --error-exitcode=1 "$testquery" $arguments`"

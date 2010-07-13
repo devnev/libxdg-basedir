@@ -1,8 +1,8 @@
 #!/bin/sh
 
-harness="`dirname "$0"`/query-harness.sh"
+harness="${top_srcdir}/tests/query-harness.sh"
 wd="`pwd`"
-td="`dirname "$0"`"
+td="${top_srcdir}/tests"
 
 export HOME=/home/test
 export XDG_CONFIG_DIRS="$wd/$td"

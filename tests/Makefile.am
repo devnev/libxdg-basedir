@@ -38,14 +38,16 @@ TESTS = testdump ${QUERYTESTS}
 
 EXTRA_DIST = query-harness.sh ${QUERYTESTS}
 
+TESTS_ENVIRONMENT = env top_srcdir=$(top_srcdir) top_builddir=$(top_builddir)
+
 testdump_SOURCES = testdump.c
 testdump_LDFLAGS = $(all_libraries)
-testdump_LDADD = ../src/libxdg-basedir.la
+testdump_LDADD = $(top_builddir)/src/libxdg-basedir.la
 
 testfind_SOURCES = testfind.c
 testfind_LDFLAGS = $(all_libraries)
-testfind_LDADD = ../src/libxdg-basedir.la
+testfind_LDADD = $(top_builddir)/src/libxdg-basedir.la
 
 testquery_SOURCES = testquery.c
 testquery_LDFLAGS = $(all_libraries)
-testquery_LDADD = ../src/libxdg-basedir.la
+testquery_LDADD = $(top_builddir)/src/libxdg-basedir.la
