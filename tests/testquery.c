@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 	{
 		if (strcmp(querytype, "directory") == 0)
 		{
-			char *rd = xdgRuntimeDirectory(NULL);
+			const char *rd = xdgRuntimeDirectory(NULL);
 			if (!rd) printf("(null)\n");
 			else printAndFreeString(rd);
 		}
