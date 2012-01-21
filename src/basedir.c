@@ -105,6 +105,7 @@ typedef struct _xdgCachedData
 	char * dataHome;
 	char * configHome;
 	char * cacheHome;
+	char * runtimeDirectory;
 	/* Note: string lists are null-terminated and all items */
 	/* except the first are assumed to be allocated using malloc. */
 	/* The first item is assumed to be allocated by malloc only if */
@@ -316,6 +317,7 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 	if (!(cache->dataHome = xdgEnvDup("XDG_DATA_HOME")) && errno == ENOMEM) return FALSE;
 	if (!(cache->configHome = xdgEnvDup("XDG_CONFIG_HOME")) && errno == ENOMEM) return FALSE;
 	if (!(cache->cacheHome = xdgEnvDup("XDG_CACHE_HOME")) && errno == ENOMEM) return FALSE;
+	if (!(cache->runtimeDirectory = xdgEnvDup("XDG_RUNTIME_DIR")) && errno == ENOMEM) return FALSE;
 	errno = 0;
 
 	if (cache->dataHome && cache->configHome && cache->cacheHome) return TRUE;
@@ -639,6 +641,13 @@ const char * xdgCacheHome(xdgHandle *handle)
 		return xdgGetCache(handle)->cacheHome;
 	else
 		return xdgGetRelativeHome("XDG_CACHE_HOME", DefaultRelativeCacheHome, sizeof(DefaultRelativeCacheHome)-1);
+}
+const char * xdgRuntimeDirectory(xdgHandle *handle)
+{
+	if (handle)
+		return xdgGetCache(handle)->runtimeDirectory;
+	else
+		return xdgEnvDup("XDG_RUNTIME_DIRECTORY");
 }
 char * xdgDataFind(const char * relativePath, xdgHandle *handle)
 {

@@ -48,7 +48,7 @@ extern "C" {
 #endif
 
 /** Version of XDG Base Directory specification implemented in this library. */
-#define XDG_BASEDIR_SPEC 0.6
+#define XDG_BASEDIR_SPEC 0.7
 
 /** @name XDG data cache management */
 /*@{*/
@@ -123,6 +123,13 @@ const char * const * xdgSearchableConfigDirectories(xdgHandle *handle);
   * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
 const char * xdgCacheHome(xdgHandle *handle);
+
+/** Base directory for user specific non-essential runtime files such as
+  * sockets and named pipes.
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
+  * @return a path as described by the standards, or NULL if no path has been
+  * set. */
+const char * xdgRuntimeDirectory(xdgHandle *handle);
 
 /*@}*/
 
