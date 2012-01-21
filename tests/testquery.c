@@ -84,6 +84,17 @@ int main(int argc, char *argv[])
 		else
 			return 1;
 	}
+	else if (strcmp(datatype, "runtime") == 0)
+	{
+		if (strcmp(querytype, "directory") == 0)
+		{
+			char *rd = xdgRuntimeDirectory(NULL);
+			if (!rd) printf("(null)\n");
+			else printAndFreeString(rd);
+		}
+		else
+			return 1;
+	}
 	else
 		return 1;
 	return 0;
