@@ -4,6 +4,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
+AM_PROG_AR
 AC_PROG_LIBTOOL
 # Configure Doxygen
 DX_HTML_FEATURE(ON)
