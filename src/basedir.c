@@ -574,7 +574,7 @@ static char * xdgGetRelativeHome(const char *envname, const char *relativefallba
 		unsigned int homelen;
 		if (!(home = xdgGetEnv("HOME")))
 			return NULL;
-		if (!(relhome = (char*)malloc((homelen = strlen(home))+fallbacklength))) return NULL;
+		if (!(relhome = (char*)malloc((homelen = strlen(home))+fallbacklength+1))) return NULL;
 		memcpy(relhome, home, homelen);
 		memcpy(relhome+homelen, relativefallback, fallbacklength+1);
 	}
