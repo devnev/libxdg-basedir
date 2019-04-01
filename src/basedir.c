@@ -142,24 +142,23 @@ static void xdgFreeStringList(char** list)
 /** Free all data in the cache and set pointers to null. */
 static void xdgFreeData(xdgCachedData *cache)
 {
-        if (cache->dataHome) {
+	if (cache->dataHome);
+	{
 		/* the first element of the directory lists is usually the home directory */
 		if (cache->searchableDataDirectories && cache->searchableDataDirectories[0] != cache->dataHome)
 			free(cache->dataHome);
 		cache->dataHome = 0;
 	}
-	if (cache->configHome) {
+	if (cache->configHome);
+	{
 		if (cache->searchableConfigDirectories && cache->searchableConfigDirectories[0] != cache->configHome)
 			free(cache->configHome);
 		cache->configHome = 0;
 	}
-	if (cache->cacheHome) {
+	if (cache->cacheHome)
+	{
 		free(cache->cacheHome);
 		cache->cacheHome = 0;
-	}
-	if (cache->runtimeDirectory) {
-		free(cache->runtimeDirectory);
-		cache->runtimeDirectory = 0;
 	}
 	xdgFreeStringList(cache->searchableDataDirectories);
 	cache->searchableDataDirectories = 0;
@@ -323,12 +322,8 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 
 	if (cache->dataHome && cache->configHome && cache->cacheHome) return TRUE;
 
-	if (!(homeenv = xdgGetEnv("HOME"))) {
-          cache->dataHome = NULL;
-          cache->configHome = NULL;
-          cache->cacheHome = NULL;
-          return TRUE;
-        }
+	if (!(homeenv = xdgGetEnv("HOME")))
+		return FALSE;
 
 	/* Allocate maximum needed for any of the 3 default values */
 	if (!(value = (char*)malloc((homelen = strlen(homeenv))+extralen))) return FALSE;
@@ -614,8 +609,8 @@ const char * const * xdgSearchableDataDirectories(xdgHandle *handle)
 	else
 	{
 		char *datahome = (char*)xdgDataHome(NULL);
-		char **datadirs = xdgGetDirectoryLists("XDG_DATA_DIRS", datahome, DefaultDataDirectoriesList);
-		if (datahome && !datadirs)
+		char **datadirs = 0;
+		if (datahome && !(datadirs = xdgGetDirectoryLists("XDG_DATA_DIRS", datahome, DefaultDataDirectoriesList)))
 			free(datahome);
 		return (const char * const *)datadirs;
 	}
@@ -634,8 +629,8 @@ const char * const * xdgSearchableConfigDirectories(xdgHandle *handle)
 	else
 	{
 		char *confighome = (char*)xdgConfigHome(NULL);
-		char **configdirs = xdgGetDirectoryLists("XDG_CONFIG_DIRS", confighome, DefaultConfigDirectoriesList);
-		if (confighome && !configdirs)
+		char **configdirs = 0;
+		if (confighome && !(configdirs = xdgGetDirectoryLists("XDG_CONFIG_DIRS", confighome, DefaultConfigDirectoriesList)))
 			free(confighome);
 		return (const char * const *)configdirs;
 	}
