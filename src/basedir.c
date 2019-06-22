@@ -259,11 +259,9 @@ static char** xdgGetPathListEnv(const char* name, const char ** defaults)
 		xdgZeroMemory(itemlist, sizeof(char*)*(size));
 
 		/* Copy defaults into itemlist. */
-		/* Why all this funky stuff? So the result can be handled uniformly by xdgFreeStringList. */
 		for (i = 0; defaults[i]; ++i)
 		{
-			if (!(item = (char*)malloc(strlen(defaults[i])+1))) { xdgFreeStringList(itemlist); return NULL; }
-			strcpy(item, defaults[i]);
+			if (!(item = strdup(defaults[i]))) { xdgFreeStringList(itemlist); return NULL; }
 			itemlist[i] = item;
 		}
 	}
