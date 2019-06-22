@@ -107,9 +107,7 @@ typedef struct _xdgCachedData
 	char * cacheHome;
 	char * runtimeDirectory;
 	/* Note: string lists are null-terminated and all items */
-	/* except the first are assumed to be allocated using malloc. */
-	/* The first item is assumed to be allocated by malloc only if */
-	/* it is not equal to the appropriate home directory string above. */
+	/* are to be allocated using malloc. */
 	char ** searchableDataDirectories;
 	char ** searchableConfigDirectories; 
 } xdgCachedData;
