@@ -328,7 +328,9 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 		return FALSE;
 
 	/* Allocate maximum needed for any of the 3 default values */
-	if (!(value = (char*)malloc((homelen = strlen(homeenv))+extralen))) return FALSE;
+	homelen = strlen(homeenv);
+	value = malloc(homelen + extralen);
+	if (value == NULL) return FALSE;
 	memcpy(value, homeenv, homelen+1);
 
 	if (!cache->dataHome)
