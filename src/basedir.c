@@ -61,7 +61,7 @@
 #else
 static void xdgZeroMemory(void* p, int n)
 {
-	while (n > 0) { ((char*)p)[n] = 0; ++n; }
+	while (n > 0) { ((char*)p)[--n] = 0; }
 }
 #endif
 
