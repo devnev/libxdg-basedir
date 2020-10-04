@@ -1,5 +1,5 @@
 AM_CFLAGS = -I$(top_srcdir)/include -Wall
-AUTOMAKE_OPTIONS = color-tests
+AUTOMAKE_OPTIONS = color-tests serial-tests
 
 check_PROGRAMS = testdump testfind testquery
 
@@ -37,10 +37,9 @@ QUERYTESTS = \
 	#
 
 TESTS = testdump ${QUERYTESTS}
+TESTS_ENVIRONMENT = env top_srcdir=$(top_srcdir) top_builddir=$(top_builddir)
 
 EXTRA_DIST = query-harness.sh ${QUERYTESTS}
-
-TESTS_ENVIRONMENT = env top_srcdir=$(top_srcdir) top_builddir=$(top_builddir)
 
 testdump_SOURCES = testdump.c
 testdump_LDFLAGS = $(all_libraries)
