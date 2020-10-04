@@ -1,0 +1,3 @@
+language: c
+before_script: autoreconf --install
+script: bash -xe -c './configure; make; make check'
