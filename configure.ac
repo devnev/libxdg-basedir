@@ -1,5 +1,5 @@
 AC_PREREQ(2.60)
-AC_INIT([libxdg-basedir], [1.2.0], mark.nevill@gmail.com)
+AC_INIT([libxdg-basedir], [1.2.2], davmac@davmac.org)
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 # Checks for programs.
 AC_PROG_CC
@@ -26,7 +26,7 @@ AC_TYPE_MODE_T
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memset strcpy strncpy bcopy bzero getenv mkdir strdup])
+AC_CHECK_FUNCS([memset strcpy strncpy bcopy bzero getenv mkdir])
 
 CC_NOUNDEFINED
 

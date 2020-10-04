@@ -81,12 +81,12 @@ int xdgUpdateData(xdgHandle *handle);
 /** @name Basic XDG Base Directory Queries */
 /*@{*/
 
-/** Base directory for user specific data files.
+/** Base directory for user-specific data files.
   * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
 const char * xdgDataHome(xdgHandle *handle);
 
-/** Base directory for user specific configuration files.
+/** Base directory for user-specific configuration files.
   * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
 const char * xdgConfigHome(xdgHandle *handle);
@@ -119,13 +119,13 @@ const char * const * xdgConfigDirectories(xdgHandle *handle);
   * @return A null-terminated list of directory strings. */
 const char * const * xdgSearchableConfigDirectories(xdgHandle *handle);
 
-/** Base directory for user specific non-essential data files.
+/** Base directory for user-specific non-essential data files.
   * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
 const char * xdgCacheHome(xdgHandle *handle);
 
-/** Base directory for user specific non-essential runtime files such as
-  * sockets and named pipes.
+/** Base directory for user-specific non-essential runtime files (including file
+  * objects such as sockets and named pipes).
   * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards, or NULL if no path has been
   * set. */
