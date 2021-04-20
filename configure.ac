@@ -1,5 +1,5 @@
 AC_PREREQ(2.60)
-AC_INIT([libxdg-basedir], [1.2.2], davmac@davmac.org)
+AC_INIT([libxdg-basedir], [1.2.3], mark.nevill@gmail.com)
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 # Checks for programs.
 AC_PROG_CC
