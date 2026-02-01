@@ -658,7 +658,7 @@ const char * xdgRuntimeDirectory(xdgHandle *handle)
 	if (handle)
 		return xdgGetCache(handle)->runtimeDirectory;
 	else
-		return xdgEnvDup("XDG_RUNTIME_DIRECTORY");
+		return xdgEnvDup("XDG_RUNTIME_DIR");
 }
 
 char * xdgDataFind(const char * relativePath, xdgHandle *handle)
