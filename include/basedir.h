@@ -48,7 +48,7 @@ extern "C" {
 #endif
 
 /** Version of XDG Base Directory specification implemented in this library. */
-#define XDG_BASEDIR_SPEC 0.7
+#define XDG_BASEDIR_SPEC 0.8
 
 /** @name XDG data cache management */
 /*@{*/
@@ -90,6 +90,11 @@ const char * xdgDataHome(xdgHandle *handle);
   * @param handle Handle to data cache, initialized with xdgInitHandle().
   * @return a path as described by the standards. */
 const char * xdgConfigHome(xdgHandle *handle);
+
+/** Base directory for user-specific state files.
+  * @param handle Handle to data cache, initialized with xdgInitHandle().
+  * @return a path as described by the standards. */
+const char *xdgStateHome(xdgHandle *handle);
 
 /** Preference-ordered set of base directories to search for data files
   * in addition to the $XDG_DATA_HOME base directory.

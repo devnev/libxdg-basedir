@@ -91,6 +91,7 @@ static void xdgZeroMemory(void* p, int n)
 static const char
 	DefaultRelativeDataHome[] = DIR_SEPARATOR_STR ".local" DIR_SEPARATOR_STR "share",
 	DefaultRelativeConfigHome[] = DIR_SEPARATOR_STR ".config",
+	DefaultRelativeStateHome[] = DIR_SEPARATOR_STR ".local" DIR_SEPARATOR_STR "state",
 	DefaultDataDirectories1[] = DIR_SEPARATOR_STR "usr" DIR_SEPARATOR_STR "local" DIR_SEPARATOR_STR "share",
 	DefaultDataDirectories2[] = DIR_SEPARATOR_STR "usr" DIR_SEPARATOR_STR "share",
 	DefaultConfigDirectories[] = DIR_SEPARATOR_STR "etc" DIR_SEPARATOR_STR "xdg",
@@ -104,6 +105,7 @@ typedef struct _xdgCachedData
 {
 	char * dataHome;
 	char * configHome;
+	char * stateHome;
 	char * cacheHome;
 	char * runtimeDirectory;
 	/* Note: string lists are null-terminated and all items */
@@ -152,6 +154,11 @@ static void xdgFreeData(xdgCachedData *cache)
 		if (cache->searchableConfigDirectories && cache->searchableConfigDirectories[0] != cache->configHome)
 			free(cache->configHome);
 		cache->configHome = 0;
+	}
+	if (cache->stateHome)
+	{
+		free(cache->stateHome);
+		cache->stateHome = 0;
 	}
 	if (cache->cacheHome)
 	{
@@ -303,7 +310,8 @@ static char* xdgEnvDup(const char *name)
 }
 
 /** Update all *Home variables of cache.
- * This includes xdgCachedData::dataHome, xdgCachedData::configHome and xdgCachedData::cacheHome.
+ * This includes xdgCachedData::dataHome, xdgCachedData::configHome,
+ * xdgCachedData::stateHome and xdgCachedData::cacheHome.
  * @param cache Data cache to be updated
  */
 static int xdgUpdateHomeDirectories(xdgCachedData* cache)
@@ -312,12 +320,14 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 	char *value;
 	unsigned int homelen;
 	static const unsigned int extralen =
-		MAX(MAX(sizeof(DefaultRelativeDataHome),
-					sizeof(DefaultRelativeConfigHome)),
-				sizeof(DefaultRelativeCacheHome));
+		MAX(MAX(MAX(sizeof(DefaultRelativeDataHome),
+			    sizeof(DefaultRelativeConfigHome)),
+			sizeof(DefaultRelativeStateHome)),
+		    sizeof(DefaultRelativeCacheHome));
 
 	if (!(cache->dataHome = xdgEnvDup("XDG_DATA_HOME")) && errno == ENOMEM) return FALSE;
 	if (!(cache->configHome = xdgEnvDup("XDG_CONFIG_HOME")) && errno == ENOMEM) return FALSE;
+	if (!(cache->stateHome = xdgEnvDup("XDG_STATE_HOME")) && errno == ENOMEM) return FALSE;
 	if (!(cache->cacheHome = xdgEnvDup("XDG_CACHE_HOME")) && errno == ENOMEM) return FALSE;
 	if (!(cache->runtimeDirectory = xdgEnvDup("XDG_RUNTIME_DIR")) && errno == ENOMEM) return FALSE;
 	errno = 0;
@@ -327,7 +337,7 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 	if (!(homeenv = xdgGetEnv("HOME")))
 		return FALSE;
 
-	/* Allocate maximum needed for any of the 3 default values */
+	/* Allocate maximum needed for any of the default values */
 	homelen = strlen(homeenv);
 	value = malloc(homelen + extralen);
 	if (value == NULL) return FALSE;
@@ -345,6 +355,12 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 		cache->configHome = strdup(value);
 	}
 
+	if (!cache->stateHome)
+	{
+		memcpy(value+homelen, DefaultRelativeStateHome, sizeof(DefaultRelativeStateHome));
+		cache->stateHome = strdup(value);
+	}
+
 	if (!cache->cacheHome)
 	{
 		memcpy(value+homelen, DefaultRelativeCacheHome, sizeof(DefaultRelativeCacheHome));
@@ -355,7 +371,7 @@ static int xdgUpdateHomeDirectories(xdgCachedData* cache)
 
 	/* free does not change errno, and the prev call *must* have been a strdup,
 	 * so errno is already set. */
-	return cache->dataHome && cache->configHome && cache->cacheHome;
+	return cache->dataHome && cache->configHome && cache->stateHome && cache->cacheHome;
 }
 
 /** Get directory lists with initial home directory.
@@ -599,6 +615,14 @@ const char * xdgConfigHome(xdgHandle *handle)
 		return xdgGetCache(handle)->configHome;
 	else
 		return xdgGetRelativeHome("XDG_CONFIG_HOME", DefaultRelativeConfigHome, sizeof(DefaultRelativeConfigHome)-1);
+}
+
+const char * xdgStateHome(xdgHandle *handle)
+{
+	if (handle)
+		return xdgGetCache(handle)->stateHome;
+	else
+		return xdgGetRelativeHome("XDG_STATE_HOME", DefaultRelativeStateHome, sizeof(DefaultRelativeStateHome)-1);
 }
 
 const char * const * xdgDataDirectories(xdgHandle *handle)
